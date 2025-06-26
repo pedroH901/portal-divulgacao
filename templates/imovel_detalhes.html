@@ -3,59 +3,98 @@
 {% block title %}{{ imovel.titulo }} - Seu Novo Imóvel{% endblock %}
 
 {% block content %}
-<div class="detalhe-grid-container">
-
-    <div class="detalhe-main">
-        <div class="galeria-imovel">
-            {% if imovel.imagens %}
-                <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto principal de {{ imovel.titulo }}">
-            {% else %}
-                <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
-            {% endif %}
-        </div>
-
-        <div class="descricao-imovel">
-            <h2>Descrição do Imóvel</h2>
-            <p>{{ imovel.descricao | safe }}</p>
-        </div>
-    </div>
-
-    <aside class="detalhe-sidebar">
-        <div class="sidebar-box">
-
-            <div class="voltar-link-container">
-                <a href="javascript:history.back()"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
-            </div>
-
-            <h1>{{ imovel.titulo }}</h1>
-            <p class="localizacao">{{ imovel.bairro }}, {{ imovel.cidade }} - {{ imovel.estado }}</p>
-            <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
-            
-            <ul class="specs-imovel">
-    <li><i class="fa-solid fa-ruler-combined"></i> {{ imovel.area_construida|int }} m²</li>
-    <li><i class="fa-solid fa-bed"></i> {{ imovel.quartos }} Quartos</li>
-    <li><i class="fa-solid fa-shower"></i> {{ imovel.banheiros }} Banheiros</li>
-    <li><i class="fa-solid fa-car"></i> {{ imovel.vagas }} Vaga(s)</li>
-
-    {% if imovel.vagas_cobertas and imovel.vagas_cobertas > 0 %}
-        <li><i class="fa-solid fa-car-tunnel"></i> {{ imovel.vagas_cobertas }} Vaga(s) Coberta(s)</li>
-    {% endif %}
-
-    {% if imovel.piscina == 1 %}
-        <li><i class="fa-solid fa-water-ladder"></i> Com Piscina</li>
-    {% endif %}
-
-    {% if imovel.area_gourmet == 1 %}
-        <li><i class="fa-solid fa-utensils"></i> Área Gourmet</li>
-    {% endif %}
-</ul>
-
-            <a href="#" class="btn btn-contato">Tenho Interesse</a>
-        </div>
-    </aside>
-
+<div class="voltar-link-container">
+    <a href="javascript:history.back()"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
 </div>
 
-<script src="https://kit.fontawesome.com/seu-codigo-do-kit.js" crossorigin="anonymous"></script>
+<div class="detalhe-bloco">
+    <div class="bloco-imagem">
+        {% if imovel.imagens %}
+            <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto principal de {{ imovel.titulo }}">
+        {% else %}
+            <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+        {% endif %}
+    </div>
+    <div class="bloco-info">
+        <h1>{{ imovel.titulo }}</h1>
+        <p class="localizacao">{{ imovel.bairro }}, {{ imovel.cidade }} - {{ imovel.estado }}</p>
+        
+        <ul class="specs-imovel">
+            <li><i class="fa-solid fa-ruler-combined"></i> {{ imovel.area_construida|int }} m²</li>
+            <li><i class="fa-solid fa-bed"></i> {{ imovel.quartos }} Quarto(s)</li>
+            <li><i class="fa-solid fa-shower"></i> {{ imovel.banheiros }} Banheiro(s)</li>
+            <li><i class="fa-solid fa-car"></i> {{ imovel.vagas }} Vaga(s)</li>
+            {% if imovel.vagas_cobertas and imovel.vagas_cobertas > 0 %}
+                <li><i class="fa-solid fa-car-tunnel"></i> {{ imovel.vagas_cobertas }} Vaga(s) Coberta(s)</li>
+            {% endif %}
+            {% if imovel.piscina == 1 %}
+                <li><i class="fa-solid fa-water-ladder"></i> Com Piscina</li>
+            {% endif %}
+            {% if imovel.area_gourmet == 1 %}
+                <li><i class="fa-solid fa-utensils"></i> Área Gourmet</li>
+            {% endif %}
+        </ul>
+
+        <div class="bloco-preco-e-acao">
+            <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+            <a href="#" class="btn btn-contato">Tenho Interesse</a>
+        </div>
+    </div>
+</div>
+
+<div class="descricao-imovel">
+    <h2>Descrição do Imóvel</h2>
+    <p>{{ imovel.descricao | safe }}</p>
+</div>
+
+
+<section class="carrossel-container">
+    <h2>Outros imóveis que podem te interessar</h2>
+    <div class="carrossel-wrapper">
+        <button class="carrossel-btn btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="carrossel-track">
+            {% for outro_imovel in outros_imoveis %}
+                <div class="card-imovel">
+                    {% if outro_imovel.imagens %}
+                        <img src="{{ outro_imovel.imagens[0].url_imagem }}" alt="Foto do {{ outro_imovel.titulo }}">
+                    {% else %}
+                        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                    {% endif %}
+                    <div class="card-content">
+                        <h3>{{ outro_imovel.titulo }}</h3>
+                        <p class="preco">R$ {{ "%.2f"|format(outro_imovel.preco)|replace('.', ',') }}</p>
+                        <a href="{{ url_for('imovel_detalhes', imovel_id=outro_imovel.id_imovel) }}" class="btn">Ver detalhes</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carrossel-btn btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</section>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const track = document.querySelector('.carrossel-track');
+    const prevBtn = document.querySelector('.btn-prev');
+    const nextBtn = document.querySelector('.btn-next');
+
+    if (track && prevBtn && nextBtn) {
+        const cardWidth = track.querySelector('.card-imovel').offsetWidth + 24; // Largura do card + gap
+
+        nextBtn.addEventListener('click', () => {
+            track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        });
+
+        prevBtn.addEventListener('click', () => {
+            track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        });
+    }
+});
+</script>
 {% endblock %}

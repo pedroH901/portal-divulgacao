@@ -139,97 +139,166 @@ footer {
     margin-top: 2rem;
 }
 
-/* --- Estilos para a Página de Detalhes do Imóvel --- */
+/* --- Estilos para a Página de Detalhes do Imóvel (v2) --- */
 
-.detalhe-grid-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* Coluna da esquerda 2x maior que a da direita */
-    gap: 2rem;
-    max-width: 1200px;
-    margin: auto;
+.voltar-link-container {
+    margin-bottom: 1.5rem;
 }
-
-.detalhe-main .galeria-imovel img {
-    width: 100%;
-    border-radius: 8px;
-    height: auto;
-}
-
-.detalhe-main .descricao-imovel {
-    margin-top: 2rem;
-}
-
-.detalhe-main .descricao-imovel h2 {
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 0.5rem;
-}
-
-.detalhe-main .descricao-imovel p {
-    line-height: 1.8;
+.voltar-link-container a {
+    text-decoration: none;
     color: #555;
+    font-weight: bold;
+}
+.voltar-link-container a:hover {
+    color: #0779e4;
 }
 
-.detalhe-sidebar .sidebar-box {
+.detalhe-bloco {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2.5rem;
     background: #fff;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    position: sticky; /* Efeito "grudento" ao rolar a página */
-    top: 2rem;
+    margin-bottom: 2rem;
 }
 
-.sidebar-box h1 {
-    font-size: 1.8rem;
+.bloco-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.bloco-info h1 {
+    font-size: 2rem;
     line-height: 1.3;
+    margin-bottom: 0.5rem;
 }
 
-.sidebar-box .localizacao {
+.bloco-info .localizacao {
     color: #666;
     margin-bottom: 1.5rem;
+    font-weight: 500;
 }
 
-.sidebar-box .preco-detalhe {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #0779e4;
-    margin-bottom: 1.5rem;
-}
-
-.specs-imovel {
+.bloco-info .specs-imovel {
     list-style: none;
-    padding: 0;
-    margin-bottom: 2rem;
+    padding: 1.5rem 0;
+    margin: 1.5rem 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    border-top: 1px solid #eee;
-    padding-top: 1.5rem;
 }
 
-.specs-imovel li {
-    background-color: #f9f9f9;
-    padding: 0.8rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
+.bloco-info .specs-imovel li {
+    font-size: 0.95rem;
     color: #333;
 }
 
-.specs-imovel li i {
+.bloco-info .specs-imovel li i {
     color: #0779e4;
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
     width: 20px;
     text-align: center;
 }
 
+.bloco-preco-e-acao .preco-detalhe {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0779e4;
+    margin-bottom: 1rem;
+}
+
 .btn-contato {
-    background: #28a745; /* Verde para o botão de interesse */
+    background: #28a745;
     width: 100%;
     text-align: center;
     padding: 1rem;
     font-size: 1.2rem;
     font-weight: bold;
     border: none;
+}
+
+.descricao-imovel {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.descricao-imovel h2 {
+    margin-bottom: 1rem;
+}
+
+/* --- Estilos do Carrossel --- */
+.carrossel-container {
+    margin-top: 4rem;
+}
+.carrossel-container h2 {
+    margin-bottom: 1.5rem;
+}
+.carrossel-wrapper {
+    position: relative;
+}
+.carrossel-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc(33.33% - 16px);
+    gap: 24px;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.carrossel-track::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+.carrossel-track .card-imovel {
+    scroll-snap-align: start;
+}
+
+.carrossel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.carrossel-btn:hover {
+    background-color: #fff;
+}
+.btn-prev {
+    left: -20px;
+}
+.btn-next {
+    right: -20px;
+}
+
+
+/* --- Ajustes de Responsividade --- */
+@media (max-width: 900px) {
+    .detalhe-bloco {
+        grid-template-columns: 1fr;
+    }
+    .carrossel-track {
+        grid-auto-columns: calc(50% - 12px);
+    }
+}
+@media (max-width: 600px) {
+    .carrossel-track {
+        grid-auto-columns: calc(80%);
+    }
 }
 
 /* --- Ajustes para telas menores (Responsividade) --- */
