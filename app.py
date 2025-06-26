@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 from models import db, Imovel
 
 # Cria a instância da aplicação Flask
@@ -8,7 +8,7 @@ app = Flask(__name__)
 # --- Configuração do Banco de Dados ---
 # (Verifique se estes nomes correspondem ao seu ambiente)
 SERVER_NAME = 'localhost'
-DATABASE_NAME = 'SeuNovoImovel' 
+DATABASE_NAME = 'SeuNovoImovel'
 
 connection_string = (
     f"DRIVER={{ODBC Driver 18 for SQL Server}};"
@@ -45,10 +45,10 @@ def imovel_detalhes(imovel_id):
     # Busca o imóvel pelo ID ou retorna um erro 404 (Página não encontrada)
     imovel = db.get_or_404(Imovel, imovel_id)
 
-    # Verifica se o imóvel não foi excluído logicamente
+    # Verifica se o imóvel não foi excluído logicamente.
+    # Se alguém tentar acessar um imóvel inativo pela URL, também retorna 404.
     if imovel.data_exclusao is not None:
-        # Se foi excluído, também retorna 404
-        return abort(404)
+        abort(404)
 
     # Busca outros imóveis para o carrossel, excluindo o atual
     outros_imoveis = Imovel.query.filter(
