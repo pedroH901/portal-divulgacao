@@ -380,3 +380,94 @@ footer {
         width: 80%;
     }
 }
+
+/* Estilos para o Formulário de Lead */
+.form-title {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.form-lead .form-group {
+    margin-bottom: 1rem;
+}
+
+.form-lead label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-lead .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-lead .form-control:focus {
+    outline: none;
+    border-color: var(--cor-principal);
+    box-shadow: 0 0 0 2px rgba(7, 121, 228, 0.2);
+}
+
+/* Estilo para as mensagens flash de sucesso/erro */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--borda-radius);
+    color: #fff;
+    text-align: center;
+    font-weight: 500;
+}
+.alert-success {
+    background-color: var(--cor-sucesso);
+}
+.alert-danger {
+    background-color: #dc3545; /* Vermelho */
+}
+
+.btn-enviar-contato {
+    background-color: var(--cor-sucesso);
+    color: var(--cor-branco);
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: var(--borda-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+    width: 100%; /* Ocupar a largura total do formulário */
+    display: block; /* Forçar a ser um bloco para ocupar a largura */
+    text-align: center; /* Centralizar o texto */
+}
+
+.btn-enviar-contato:hover {
+    filter: brightness(110%);
+}
+
+#mostrarFormulario {
+    background-color: var(--cor-principal);
+    color: var(--cor-branco);
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: var(--borda-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+    width: 100%;
+    text-align: center;
+    display: block; /* Para ocupar a largura total */
+    margin-top: 1rem; /* Espaço acima do botão */
+}
+
+#mostrarFormulario:hover {
+    filter: brightness(110%);
+}

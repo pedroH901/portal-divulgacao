@@ -35,9 +35,33 @@
             {% endif %}
         </ul>
 
-        <div class="bloco-preco-e-acao">
+                <!-- ÁREA ATUALIZADA: PREÇO E FORMULÁRIO -->
+        </div> <div class="bloco-preco-e-acao">
             <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
-            <a href="#" class="btn btn-contato">Tenho Interesse</a>
+            <button type="button" id="mostrarFormulario" class="btn btn-contato">Tenho Interesse</button>
+            
+            <div id="containerFormulario" style="display: none;">
+                <h3 class="form-title">Ficou interessado? Fale conosco!</h3>
+                <form method="POST" action="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="form-lead">
+                    <div class="form-group">
+                        <label for="nome">Nome completo</label>
+                        <input type="text" id="nome" name="nome" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Seu melhor e-mail</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone / WhatsApp</label>
+                        <input type="tel" id="telefone" name="telefone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem (opcional)</label>
+                        <textarea id="mensagem" name="mensagem" class="form-control" rows="3" placeholder="Olá, tenho interesse neste imóvel e gostaria de mais informações."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-enviar-contato">Enviar Contato</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -45,6 +69,14 @@
 <div class="descricao-imovel">
     <h2>Descrição do Imóvel</h2>
     <p>{{ imovel.descricao | safe }}</p>
+</div>
+
+
+        <div class="bloco-preco-e-acao">
+            <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+            <a href="#" class="btn btn-contato">Tenho Interesse</a>
+        </div>
+    </div>
 </div>
 
 <section class="carrossel-container">
@@ -97,5 +129,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mostrarFormularioBtn = document.getElementById('mostrarFormulario');
+        const containerFormularioDiv = document.getElementById('containerFormulario');
+
+        if (mostrarFormularioBtn && containerFormularioDiv) {
+            mostrarFormularioBtn.addEventListener('click', function() {
+                containerFormularioDiv.style.display = 'block'; // Ou 'flex' se o layout do container precisar ser flex
+                mostrarFormularioBtn.style.display = 'none'; // Oculta o botão após clicar
+            });
+        }
+    });
 </script>
 {% endblock %}
