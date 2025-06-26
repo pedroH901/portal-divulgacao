@@ -22,6 +22,11 @@
 
     <aside class="detalhe-sidebar">
         <div class="sidebar-box">
+
+            <div class="voltar-link-container">
+                <a href="javascript:history.back()"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</a>
+            </div>
+
             <h1>{{ imovel.titulo }}</h1>
             <p class="localizacao">{{ imovel.bairro }}, {{ imovel.cidade }} - {{ imovel.estado }}</p>
             <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
