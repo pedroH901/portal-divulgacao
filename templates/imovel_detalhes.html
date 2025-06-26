@@ -32,11 +32,23 @@
             <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
             
             <ul class="specs-imovel">
-                <li><i class="fa-solid fa-ruler-combined"></i> {{ imovel.area_construida|int }} m²</li>
-                <li><i class="fa-solid fa-bed"></i> {{ imovel.quartos }} Quartos</li>
-                <li><i class="fa-solid fa-shower"></i> {{ imovel.banheiros }} Banheiros</li>
-                <li><i class="fa-solid fa-car"></i> {{ imovel.vagas }} Vagas</li>
-            </ul>
+    <li><i class="fa-solid fa-ruler-combined"></i> {{ imovel.area_construida|int }} m²</li>
+    <li><i class="fa-solid fa-bed"></i> {{ imovel.quartos }} Quartos</li>
+    <li><i class="fa-solid fa-shower"></i> {{ imovel.banheiros }} Banheiros</li>
+    <li><i class="fa-solid fa-car"></i> {{ imovel.vagas }} Vaga(s)</li>
+
+    {% if imovel.vagas_cobertas and imovel.vagas_cobertas > 0 %}
+        <li><i class="fa-solid fa-car-tunnel"></i> {{ imovel.vagas_cobertas }} Vaga(s) Coberta(s)</li>
+    {% endif %}
+
+    {% if imovel.piscina == 1 %}
+        <li><i class="fa-solid fa-water-ladder"></i> Com Piscina</li>
+    {% endif %}
+
+    {% if imovel.area_gourmet == 1 %}
+        <li><i class="fa-solid fa-utensils"></i> Área Gourmet</li>
+    {% endif %}
+</ul>
 
             <a href="#" class="btn btn-contato">Tenho Interesse</a>
         </div>

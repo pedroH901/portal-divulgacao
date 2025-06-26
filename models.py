@@ -1,4 +1,3 @@
-# models.py
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -17,10 +16,12 @@ class Imovel(db.Model):
     suites = db.Column('Suites', db.Integer)
     banheiros = db.Column('Banheiros', db.Integer)
     vagas = db.Column('Vagas', db.Integer)
+    piscina = db.Column('Piscina', db.Integer, default=0)
+    vagas_cobertas = db.Column('VagasCobertas', db.Integer, default=0)
+    area_gourmet = db.Column('AreaGourmet', db.Integer, default=0)  
     destaque_ordem = db.Column('DestaqueOrdem', db.Integer, default=0)
     data_exclusao = db.Column('DataExclusao', db.DateTime, nullable=True)
 
-    # Relacionamento para buscar as imagens
     imagens = db.relationship('ImagemImovel', backref='imovel', lazy=True)
 
     def __repr__(self):
