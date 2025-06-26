@@ -82,19 +82,37 @@ main {
 .card-imovel {
     background: #fff;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 8px; /* Bordas mais arredondadas */
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: left; /* Alinhar texto à esquerda */
+    transition: transform 0.2s ease-in-out; /* Efeito suave ao passar o mouse */
+}
+
+.card-imovel:hover {
+    transform: translateY(-5px); /* Eleva o card um pouco */
 }
 
 .card-imovel img {
     width: 100%;
     height: auto;
+    display: block; /* Remove espaços em branco abaixo da imagem */
 }
 
-.card-imovel h3, .card-imovel p {
-    padding: 0.5rem;
+/* Nova classe para o conteúdo do card */
+.card-content {
+    padding: 1rem 1.5rem;
+}
+
+.card-imovel h3 {
+    margin-bottom: 0.5rem;
+}
+
+.card-imovel .preco { /* Classe específica para o preço */
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0779e4;
+    margin-bottom: 1rem;
 }
 
 .btn {
@@ -102,9 +120,11 @@ main {
     background: #0779e4;
     color: #fff;
     padding: 0.8rem 1.5rem;
-    margin-bottom: 1rem;
     text-decoration: none;
     border-radius: 5px;
+    width: 100%; /* Botão ocupa a largura toda do card */
+    text-align: center;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
 }
 
 /* Footer */
