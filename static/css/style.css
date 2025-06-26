@@ -135,3 +135,103 @@ footer {
     color: #fff;
     margin-top: 2rem;
 }
+
+/* --- Estilos para a Página de Detalhes do Imóvel --- */
+
+.detalhe-grid-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Coluna da esquerda 2x maior que a da direita */
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.detalhe-main .galeria-imovel img {
+    width: 100%;
+    border-radius: 8px;
+    height: auto;
+}
+
+.detalhe-main .descricao-imovel {
+    margin-top: 2rem;
+}
+
+.detalhe-main .descricao-imovel h2 {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.detalhe-main .descricao-imovel p {
+    line-height: 1.8;
+    color: #555;
+}
+
+.detalhe-sidebar .sidebar-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: sticky; /* Efeito "grudento" ao rolar a página */
+    top: 2rem;
+}
+
+.sidebar-box h1 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+}
+
+.sidebar-box .localizacao {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-box .preco-detalhe {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0779e4;
+    margin-bottom: 1.5rem;
+}
+
+.specs-imovel {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.specs-imovel li {
+    background-color: #f9f9f9;
+    padding: 0.8rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.specs-imovel li i {
+    color: #0779e4;
+    margin-right: 0.5rem;
+    width: 20px;
+    text-align: center;
+}
+
+.btn-contato {
+    background: #28a745; /* Verde para o botão de interesse */
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+}
+
+/* --- Ajustes para telas menores (Responsividade) --- */
+@media (max-width: 900px) {
+    .detalhe-grid-container {
+        grid-template-columns: 1fr; /* Coluna única em telas menores */
+    }
+}

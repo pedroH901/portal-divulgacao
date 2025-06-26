@@ -9,34 +9,24 @@
     </section>
 
     <section class="destaques">
-        <h2>Imóveis em Destaque</h2>
-        <div class="grid-imoveis">
-            <div class="card-imovel">
-                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Foto+do+Im%C3%B3vel" alt="Foto do imóvel">
-                <div class="card-content">
-                    <h3>Casa Moderna no Centro</h3>
-                    <p class="preco">R$ 500.000,00</p>
-                    <a href="#" class="btn">Ver detalhes</a>
-                </div>
-            </div>
+    <h2>Imóveis em Destaque</h2>
+    <div class="grid-imoveis">
 
-            <div class="card-imovel">
-                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Foto+do+Im%C3%B3vel" alt="Foto do imóvel">
-                <div class="card-content">
-                    <h3>Apartamento com Vista</h3>
-                    <p class="preco">R$ 350.000,00</p>
-                    <a href="#" class="btn">Ver detalhes</a>
-                </div>
-            </div>
+        {% for imovel in imoveis %}
+        <div class="card-imovel">
+            {% if imovel.imagens %}
+                <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto do {{ imovel.titulo }}">
+            {% else %}
+                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+            {% endif %}
 
-            <div class="card-imovel">
-                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Foto+do+Im%C3%B3vel" alt="Foto do imóvel">
-                <div class="card-content">
-                    <h3>Terreno Amplo</h3>
-                    <p class="preco">R$ 150.000,00</p>
-                    <a href="#" class="btn">Ver detalhes</a>
-                </div>
+            <div class="card-content">
+                <h3>{{ imovel.titulo }}</h3>
+                <p class="preco">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
             </div>
         </div>
-    </section>
+        {% endfor %}
+        </div>
+</section>
 {% endblock %}
