@@ -47,7 +47,6 @@
     <p>{{ imovel.descricao | safe }}</p>
 </div>
 
-
 <section class="carrossel-container">
     <h2>Outros imóveis que podem te interessar</h2>
     <div class="carrossel-wrapper">
@@ -71,9 +70,6 @@
         <button class="carrossel-btn btn-next"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 </section>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 {% endblock %}
 
 
@@ -81,11 +77,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const track = document.querySelector('.carrossel-track');
+    if (!track) return;
+
     const prevBtn = document.querySelector('.btn-prev');
     const nextBtn = document.querySelector('.btn-next');
+    const card = track.querySelector('.card-imovel');
 
-    if (track && prevBtn && nextBtn) {
-        const cardWidth = track.querySelector('.card-imovel').offsetWidth + 24; // Largura do card + gap
+    if (card && prevBtn && nextBtn) {
+        // Pega a largura do card + gap do CSS
+        const gap = parseFloat(getComputedStyle(track).gap);
+        const cardWidth = card.offsetWidth + gap;
 
         nextBtn.addEventListener('click', () => {
             track.scrollBy({ left: cardWidth, behavior: 'smooth' });
