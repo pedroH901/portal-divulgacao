@@ -14,6 +14,7 @@ imovel_caracteristicas = db.Table('imovel_caracteristicas',
 )
 
 class Usuario(db.Model):
+    """ Mapeia a tabela 'Usuarios' do banco de dados. """
     __tablename__ = 'Usuarios'
     id_usuario = db.Column('Id_usuario', db.Integer, primary_key=True)
     nome = db.Column('Nome', db.String(100), nullable=False)
@@ -28,13 +29,14 @@ class Usuario(db.Model):
     aceitou_contrato = db.Column('AceitouContrato', db.Boolean, default=False)
     data_exclusao = db.Column('DataExclusao', db.DateTime, nullable=True)
 
-    # Relacionamento: um usuário pode ter vários imóveis
+    # Relacionamentos: um usuário pode ter vários imóveis e ser responsável por vários leads.
     imoveis = db.relationship('Imovel', backref='anunciante', lazy=True)
+    leads_responsavel = db.relationship('Lead', backref='responsavel', lazy=True, foreign_keys='Lead.id_usuario_responsavel')
 
 class Imovel(db.Model):
+    """ Mapeia a tabela 'Imoveis' do banco de dados. """
     __tablename__ = 'Imoveis'
     id_imovel = db.Column('Id_imovel', db.Integer, primary_key=True)
-    # Ligação com a tabela Usuarios
     id_usuario = db.Column('Id_usuario', db.Integer, db.ForeignKey('Usuarios.Id_usuario'), nullable=False)
     titulo = db.Column('Titulo', db.String(150), nullable=False)
     descricao = db.Column('Descricao', db.Text)
@@ -43,31 +45,27 @@ class Imovel(db.Model):
     cidade = db.Column('Cidade', db.String(100))
     estado = db.Column('Estado', db.String(2))
     area_construida = db.Column('AreaConstruida', db.Numeric(10, 2))
-    quartos = db.Column('Quartos', db.Integer)
-    suites = db.Column('Suites', db.Integer)
-    banheiros = db.Column('Banheiros', db.Integer)
-    vagas = db.Column('Vagas', db.Integer)
+    quartos = db.Column('Quartos', db.Integer, default=0)
+    suites = db.Column('Suites', db.Integer, default=0)
+    banheiros = db.Column('Banheiros', db.Integer, default=0)
     piscina = db.Column('Piscina', db.Integer, default=0)
+    vagas = db.Column('Vagas', db.Integer, default=0)
     vagas_cobertas = db.Column('VagasCobertas', db.Integer, default=0)
     area_gourmet = db.Column('AreaGourmet', db.Integer, default=0)
-    destaque_ordem = db.Column('DestaqueOrdem', db.Integer, default=0)
     data_exclusao = db.Column('DataExclusao', db.DateTime, nullable=True)
+    destaque_ordem = db.Column('DestaqueOrdem', db.Integer, default=0)
 
-    imagens = db.relationship('ImagemImovel', backref='imovel', lazy=True)
+    # Relacionamentos
+    imagens = db.relationship('ImagemImovel', backref='imovel', lazy=True, cascade="all, delete-orphan")
+    leads = db.relationship('Lead', backref='imovel_solicitado', lazy=True, foreign_keys='Lead.id_imovel')
 
 class ImagemImovel(db.Model):
+    """ Mapeia a tabela 'ImagensImovel'. """
     __tablename__ = 'ImagensImovel'
     id_imagem = db.Column('Id_imagem', db.Integer, primary_key=True)
     id_imovel = db.Column('Id_imovel', db.Integer, db.ForeignKey('Imoveis.Id_imovel'), nullable=False)
     url_imagem = db.Column('UrlImagem', db.String(255), nullable=False)
     ordem = db.Column('Ordem', db.Integer, default=0)
-
-class Caracteristica(db.Model):
-    """ Mapeia a tabela 'Caracteristicas'. """
-    __tablename__ = 'Caracteristicas'
-    id_caracteristica = db.Column('Id_caracteristica', db.Integer, primary_key=True)
-    nome = db.Column('Nome', db.String(100), unique=True, nullable=False)
-    icone = db.Column('Icone', db.String(50))
 
 class Lead(db.Model):
     """ Mapeia a tabela 'Leads'. """
@@ -78,9 +76,9 @@ class Lead(db.Model):
     telefone = db.Column('Telefone', db.String(20))
     mensagem = db.Column('Mensagem', db.Text)
     id_imovel = db.Column('Id_imovel', db.Integer, db.ForeignKey('Imoveis.Id_imovel'), nullable=False)
-    origem = db.Column('Origem', db.String(50))
     data_contato = db.Column('DataContato', db.DateTime, nullable=False, default=datetime.utcnow)
     id_usuario_responsavel = db.Column('Id_usuario_responsavel', db.Integer, db.ForeignKey('Usuarios.Id_usuario'), nullable=True)
+
 
 class Anuncio(db.Model):
     """ Mapeia a tabela 'Anuncios'. """

@@ -36,12 +36,15 @@
         </ul>
 
                 <!-- ÁREA ATUALIZADA: PREÇO E FORMULÁRIO -->
-        </div> <div class="bloco-preco-e-acao">
+        <div class="bloco-preco-e-acao">
             <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
-            <button type="button" id="mostrarFormulario" class="btn btn-contato">Tenho Interesse</button>
-            
-            <div id="containerFormulario" style="display: none;">
-                <h3 class="form-title">Ficou interessado? Fale conosco!</h3>
+
+            <!-- 1. O ÚNICO BOTÃO, que agora é o nosso gatilho -->
+            <button type="button" id="gatilho-form" class="btn btn-contato">Tenho Interesse</button>
+
+            <!-- 2. O formulário fica aqui dentro, mas escondido -->
+            <div id="container-form-lead" class="form-escondido">
+                <h3 class="form-title">Ótimo! Preencha seus dados para continuar.</h3>
                 <form method="POST" action="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="form-lead">
                     <div class="form-group">
                         <label for="nome">Nome completo</label>
@@ -59,24 +62,18 @@
                         <label for="mensagem">Mensagem (opcional)</label>
                         <textarea id="mensagem" name="mensagem" class="form-control" rows="3" placeholder="Olá, tenho interesse neste imóvel e gostaria de mais informações."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-enviar-contato">Enviar Contato</button>
+                    <button type="submit" class="btn btn-contato">Entrar em Contato</button>
                 </form>
             </div>
         </div>
+
     </div>
 </div>
+
 
 <div class="descricao-imovel">
     <h2>Descrição do Imóvel</h2>
     <p>{{ imovel.descricao | safe }}</p>
-</div>
-
-
-        <div class="bloco-preco-e-acao">
-            <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
-            <a href="#" class="btn btn-contato">Tenho Interesse</a>
-        </div>
-    </div>
 </div>
 
 <section class="carrossel-container">
@@ -97,9 +94,21 @@
                         <a href="{{ url_for('imovel_detalhes', imovel_id=outro_imovel.id_imovel) }}" class="btn">Ver detalhes</a>
                     </div>
                 </div>
-            {% endfor %}
+            
         </div>
         <button class="carrossel-btn btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="form-actions">
+        <button type="submit" class="btn btn-enviar">Enviar por E-mail</button>
+        
+        <!-- NOVO BOTÃO WHATSAPP (só aparece se o link existir) -->
+        {% if link_whatsapp %}
+        <a href="{{ link_whatsapp }}" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>Chamar no WhatsApp</span>
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
     </div>
 </section>
 {% endblock %}
@@ -143,5 +152,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+</script>
+
+<script>
+    const botaoGatilho = document.getElementById('gatilho-form');
+    const containerForm = document.getElementById('container-form-lead');
+
+    if (botaoGatilho && containerForm) {
+        botaoGatilho.addEventListener('click', function() {
+            // Esconde o botão "Tenho Interesse"
+            this.style.display = 'none';
+            // Mostra o container do formulário
+            containerForm.style.display = 'block';
+        });
+    }
 </script>
 {% endblock %}

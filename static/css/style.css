@@ -471,3 +471,51 @@ footer {
 #mostrarFormulario:hover {
     filter: brightness(110%);
 }
+
+/* Garante que o formulário comece escondido */
+.form-escondido {
+    display: none;
+}
+
+/* Deixa o botão principal "Tenho Interesse" VERDE */
+#gatilho-form.btn-contato {
+    background-color: var(--cor-sucesso);
+    width: 100%;
+}
+
+/* Garante que o botão de SUBMIT do formulário seja VERDE também */
+.form-lead .btn-contato {
+    background-color: var(--cor-sucesso);
+    width: 100%;
+}
+
+.form-actions {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Espaço entre os botões */
+}
+
+/* Estilo para o botão de envio normal */
+.btn-enviar {
+    background-color: var(--cor-principal);
+    width: 100%;
+}
+
+/* Estilo específico para o botão do WhatsApp */
+.btn-whatsapp {
+    background-color: #25D366; /* Cor oficial do WhatsApp */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem; /* Espaço entre o ícone e o texto */
+}
+
+.btn-whatsapp:hover {
+    background-color: #20b856;
+}
+
+.btn-whatsapp i {
+    font-size: 1.2rem;
+}
