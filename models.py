@@ -54,6 +54,7 @@ class Imovel(db.Model):
     area_gourmet = db.Column('AreaGourmet', db.Integer, default=0)
     data_exclusao = db.Column('DataExclusao', db.DateTime, nullable=True)
     destaque_ordem = db.Column('DestaqueOrdem', db.Integer, default=0)
+    finalidade = db.Column('Finalidade', db.String(20), nullable=False, default='Venda')
 
     # Relacionamentos
     imagens = db.relationship('ImagemImovel', backref='imovel', lazy=True, cascade="all, delete-orphan")

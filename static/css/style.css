@@ -538,3 +538,68 @@ footer {
 .btn-whatsapp i {
     font-size: 1.2rem;
 }
+
+/* --- Estilos para a Barra de Busca --- */
+.search-bar-container {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin-top: -50px; /* Efeito "flutuante" sobre a seção hero */
+    position: relative;
+    z-index: 20;
+    margin-bottom: 3rem;
+}
+
+.search-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    align-items: end; /* Alinha os itens na parte de baixo */
+}
+
+.search-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-form label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.search-form .form-control {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+}
+
+.btn-buscar {
+    padding: 0.85rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* --- Estilos para a Página de Resultados da Busca --- */
+.resultados-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: var(--cor-branco);
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.sem-resultados {
+    grid-column: 1 / -1; /* Faz a mensagem ocupar a largura toda da grid */
+    text-align: center;
+    padding: 4rem 2rem;
+}

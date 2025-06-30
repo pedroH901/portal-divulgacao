@@ -8,6 +8,45 @@
         <p>Conectamos você às melhores oportunidades do mercado.</p>
     </section>
 
+     <section class="search-bar-container">
+        <form action="{{ url_for('buscar') }}" method="GET" class="search-form">
+            <div class="form-group">
+                <label for="finalidade">O que você deseja?</label>
+                <select id="finalidade" name="finalidade" class="form-control">
+                    <option value="Venda">Comprar</option>
+                    <option value="Aluguel">Alugar</option>
+                </select>
+                <label for="tipo">Tipo de Imóvel</label>
+                <select id="tipo" name="tipo" class="form-control">
+                    <option value="">Todos os Tipos</option>
+                    <option value="Apartamento">Apartamento</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Comercial">Sala Comercial</option>
+                    <option value="Terreno">Terreno</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <input type="text" id="cidade" name="cidade" class="form-control" placeholder="Digite a cidade">
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro</label>
+                <input type="text" id="bairro" name="bairro" class="form-control" placeholder="Opcional">
+            </div>
+            <div class="form-group">
+                <label for="quartos">Quartos</label>
+                <select id="quartos" name="quartos" class="form-control">
+                    <option value="">Qualquer</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-buscar"><i class="fa-solid fa-magnifying-glass"></i> Buscar Imóveis</button>
+        </form>
+    </section>
+
     <section class="destaques">
     <h2>Imóveis em Destaque</h2>
     <div class="grid-imoveis">

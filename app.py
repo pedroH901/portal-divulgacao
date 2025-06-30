@@ -94,6 +94,44 @@ def imovel_detalhes(imovel_id):
         link_whatsapp=link_whatsapp
     )
 
+    # --- NOVA ROTA PARA LIDAR COM A BUSCA ---
+@app.route('/buscar')
+def buscar():
+    """
+    Recebe os parâmetros de busca da URL, filtra o banco de dados
+    e exibe os resultados em uma nova página.
+    """
+    # Pega todos os parâmetros da URL
+    query_finalidade = request.args.get('finalidade')
+    query_tipo = request.args.get('tipo')
+    query_cidade = request.args.get('cidade')
+    query_bairro = request.args.get('bairro')
+    query_quartos = request.args.get('quartos')
+
+    # Inicia a consulta base
+    base_query = Imovel.query.filter(Imovel.data_exclusao.is_(None))
+
+    # Adiciona filtros dinamicamente
+    if query_finalidade:
+        base_query = base_query.filter(Imovel.finalidade == query_finalidade)
+    if query_tipo:
+        base_query = base_query.filter(Imovel.titulo.ilike(f'%{query_tipo}%'))
+    if query_cidade:
+        base_query = base_query.filter(Imovel.cidade.ilike(f'%{query_cidade}%'))
+    if query_bairro:
+        base_query = base_query.filter(Imovel.bairro.ilike(f'%{query_bairro}%'))
+    if query_quartos:
+        try:
+            num_quartos = int(query_quartos)
+            base_query = base_query.filter(Imovel.quartos >= num_quartos)
+        except (ValueError, TypeError):
+            pass
+            
+    resultados = base_query.all()
+
+    return render_template('resultados.html', imoveis=resultados, total_resultados=len(resultados))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

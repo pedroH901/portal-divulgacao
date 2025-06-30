@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}Resultados da Busca - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+    <div class="voltar-link-container">
+        <a href="{{ url_for('index') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para a busca</a>
+    </div>
+    <section class="resultados-header">
+        <h1>Resultados da Busca</h1>
+        <p>Encontramos <strong>{{ total_resultados }}</strong> imóvel(is) para você.</p>
+    </section>
+
+    <section class="destaques">
+        <div class="grid-imoveis">
+
+            {% if imoveis %}
+                {% for imovel in imoveis %}
+                <div class="card-imovel">
+                    {% if imovel.imagens %}
+                        <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto do {{ imovel.titulo }}">
+                    {% else %}
+                        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                    {% endif %}
+                    <div class="card-content">
+                        <h3>{{ imovel.titulo }}</h3>
+                        <p class="preco">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                        <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="sem-resultados">
+                    <h2>Nenhum imóvel encontrado</h2>
+                    <p>Tente refinar sua busca ou volte para a <a href="{{ url_for('index') }}">página inicial</a> para ver nossos destaques.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
