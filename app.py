@@ -2,14 +2,13 @@
 from urllib.parse import quote_plus
 from flask import Flask, render_template, request, flash, redirect, url_for, abort
 from models import db, Imovel, Lead, Usuario # Importe todos os modelos necessários
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
 # --- Configurações da Aplicação ---
-# Chave secreta para o Flask poder mostrar mensagens "flash" de forma segura.
 app.config['SECRET_KEY'] = 'uma-chave-secreta-bem-aleatoria-para-seguranca'
-
-# Configuração do Banco de Dados (verifique se os nomes estão corretos)
 SERVER_NAME = 'localhost'
 DATABASE_NAME = 'SeuNovoImovel'
 
@@ -23,27 +22,33 @@ connection_string = (
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={connection_string.replace(';', '%3B')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializa o banco de dados com a aplicação
+# Inicializa as extensões com a aplicação
 db.init_app(app)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message_category = 'info'
+login_manager.login_message = "Por favor, faça o login para acessar esta página."
 
 
-# --- Rotas da Aplicação ---
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
+
+# --- Rotas Públicas ---
 
 @app.route('/')
 def index():
-    """ Rota da página inicial. """
     imoveis = Imovel.query.filter(Imovel.data_exclusao.is_(None)).order_by(Imovel.destaque_ordem.desc()).all()
     return render_template('index.html', imoveis=imoveis)
 
 
 @app.route('/imovel/<int:imovel_id>', methods=['GET', 'POST'])
 def imovel_detalhes(imovel_id):
-    """ Rota da página de detalhes, que mostra o imóvel e processa o formulário de contato. """
     imovel = db.get_or_404(Imovel, imovel_id)
     if imovel.data_exclusao is not None:
         abort(404)
 
-    # Se a requisição for do tipo POST (formulário de lead enviado)
     if request.method == 'POST':
         nome = request.form.get('nome')
         email = request.form.get('email')
@@ -51,12 +56,8 @@ def imovel_detalhes(imovel_id):
         mensagem = request.form.get('mensagem')
 
         novo_lead = Lead(
-            nome=nome,
-            email=email,
-            telefone=telefone,
-            mensagem=mensagem,
-            id_imovel=imovel.id_imovel,
-            id_usuario_responsavel=imovel.id_usuario # Associa o lead ao corretor dono do imóvel
+            nome=nome, email=email, telefone=telefone, mensagem=mensagem,
+            id_imovel=imovel.id_imovel, id_usuario_responsavel=imovel.id_usuario
         )
         
         db.session.add(novo_lead)
@@ -64,29 +65,21 @@ def imovel_detalhes(imovel_id):
 
         flash('Contato enviado com sucesso! Em breve um corretor retornará.', 'success')
         return redirect(url_for('imovel_detalhes', imovel_id=imovel_id))
-
-    # --- Lógica do WhatsApp (executada apenas quando a página é carregada - GET) ---
+    
     link_whatsapp = None
     try:
-        # Verifica se o imóvel tem um anunciante e se o anunciante tem telefone
         if imovel.anunciante and imovel.anunciante.telefone:
             telefone_limpo = "".join(filter(str.isdigit, imovel.anunciante.telefone))
-            if telefone_limpo: # Garante que o telefone não ficou vazio após a limpeza
+            if telefone_limpo:
                 mensagem_wpp = f"Olá, tenho interesse no imóvel '{imovel.titulo}', que vi no portal."
                 mensagem_encoded = quote_plus(mensagem_wpp)
                 link_whatsapp = f"https://wa.me/55{telefone_limpo}?text={mensagem_encoded}"
     except Exception as e:
-        # Se der qualquer erro (ex: anunciante não encontrado), não quebra o site, apenas avisa no terminal.
-        print(f"AVISO: Não foi possível gerar link do WhatsApp para o imóvel {imovel_id}. Erro: {e}")
+        print(f"AVISO: Não foi possível gerar link do WhatsApp. Erro: {e}")
         link_whatsapp = None
     
-    # Busca outros imóveis para o carrossel
-    outros_imoveis = Imovel.query.filter(
-        Imovel.id_imovel != imovel_id,
-        Imovel.data_exclusao.is_(None)
-    ).limit(6).all()
+    outros_imoveis = Imovel.query.filter(Imovel.id_imovel != imovel_id, Imovel.data_exclusao.is_(None)).limit(6).all()
     
-    # Envia todas as informações para o template
     return render_template(
         'imovel_detalhes.html', 
         imovel=imovel, 
@@ -94,44 +87,82 @@ def imovel_detalhes(imovel_id):
         link_whatsapp=link_whatsapp
     )
 
-    # --- NOVA ROTA PARA LIDAR COM A BUSCA ---
 @app.route('/buscar')
 def buscar():
-    """
-    Recebe os parâmetros de busca da URL, filtra o banco de dados
-    e exibe os resultados em uma nova página.
-    """
-    # Pega todos os parâmetros da URL
-    query_finalidade = request.args.get('finalidade')
-    query_tipo = request.args.get('tipo')
-    query_cidade = request.args.get('cidade')
-    query_bairro = request.args.get('bairro')
-    query_quartos = request.args.get('quartos')
-
-    # Inicia a consulta base
+    page = request.args.get('page', 1, type=int)
+    search_params = request.args.to_dict()
+    search_params.pop('page', None)
     base_query = Imovel.query.filter(Imovel.data_exclusao.is_(None))
 
-    # Adiciona filtros dinamicamente
-    if query_finalidade:
-        base_query = base_query.filter(Imovel.finalidade == query_finalidade)
-    if query_tipo:
-        base_query = base_query.filter(Imovel.titulo.ilike(f'%{query_tipo}%'))
-    if query_cidade:
-        base_query = base_query.filter(Imovel.cidade.ilike(f'%{query_cidade}%'))
-    if query_bairro:
-        base_query = base_query.filter(Imovel.bairro.ilike(f'%{query_bairro}%'))
-    if query_quartos:
+    if search_params.get('finalidade'):
+        base_query = base_query.filter(Imovel.finalidade == search_params['finalidade'])
+    if search_params.get('tipo'):
+        base_query = base_query.filter(Imovel.titulo.ilike(f'%{search_params["tipo"]}%'))
+    if search_params.get('cidade'):
+        base_query = base_query.filter(Imovel.cidade.ilike(f'%{search_params["cidade"]}%'))
+    if search_params.get('bairro'):
+        base_query = base_query.filter(Imovel.bairro.ilike(f'%{search_params["bairro"]}%'))
+    if search_params.get('quartos'):
         try:
-            num_quartos = int(query_quartos)
+            num_quartos = int(search_params['quartos'])
             base_query = base_query.filter(Imovel.quartos >= num_quartos)
         except (ValueError, TypeError):
             pass
             
-    resultados = base_query.all()
+    pagination = base_query.order_by(Imovel.destaque_ordem.desc()).paginate(
+        page=page, per_page=9, error_out=False
+    )
+    
+    resultados = pagination.items
+    total_resultados = pagination.total
 
-    return render_template('resultados.html', imoveis=resultados, total_resultados=len(resultados))
+    return render_template(
+        'resultados.html', 
+        imoveis=resultados, 
+        total_resultados=total_resultados, 
+        pagination=pagination,
+        search_params=search_params
+    )
+
+# --- ROTAS DE AUTENTICAÇÃO E PAINEL ---
+
+# ESTA É A ÚNICA E CORRETA FUNÇÃO 'login'
+@app.route('/painel-controle', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        user = Usuario.query.filter_by(email=email).first()
+        if user and bcrypt.check_password_hash(user.senha_hash, senha):
+            login_user(user, remember=True)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+        else:
+            flash('Login falhou. Verifique o e-mail e a senha.', 'danger')
+
+    return render_template('login.html', title='Login')
 
 
+@app.route('/dashboard')
+@login_required # Garante que só usuários logados acessem
+def dashboard():
+    """
+    Busca e exibe os imóveis pertencentes ao usuário logado.
+    """
+    # Usamos o relacionamento 'imoveis' que definimos no models.py 
+    # para pegar apenas os imóveis deste usuário.
+    meus_imoveis = Imovel.query.filter_by(anunciante=current_user).order_by(Imovel.titulo).all()
 
+    return render_template('dashboard.html', title='Painel', meus_imoveis=meus_imoveis)
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+# Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':
     app.run(debug=True)
+

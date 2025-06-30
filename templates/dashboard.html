@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}Painel de Controle{% endblock %}
+
+{% block content %}
+<div class="voltar-link-container">
+    <a href="{{ url_for('index') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para início</a>
+</div>
+<div class="dashboard-header">
+    <h2>Painel de Controle</h2>
+    <p>Bem-vindo de volta, <strong>{{ current_user.nome }}</strong>!</p>
+</div>
+
+<div class="painel-container">
+    <div class="painel-header">
+        <h3>Meus Imóveis Cadastrados</h3>
+        <a href="#" class="btn btn-cadastrar">Cadastrar Novo Imóvel</a>
+    </div>
+
+    {% if meus_imoveis %}
+    <div class="tabela-imoveis-wrapper">
+        <table class="tabela-imoveis">
+            <thead>
+                <tr>
+                    <th>Título do Imóvel</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for imovel in meus_imoveis %}
+                <tr>
+                    <td>{{ imovel.titulo }}</td>
+                    <td>R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</td>
+                    <td>
+                        {% if imovel.data_exclusao is none %}
+                            <span class="status status-ativo">Ativo</span>
+                        {% else %}
+                            <span class="status status-inativo">Inativo</span>
+                        {% endif %}
+                    </td>
+                    <td class="acoes">
+                        <a href="#" class="btn-acao btn-editar" title="Editar"><i class="fa-solid fa-pencil"></i></a>
+                        <a href="#" class="btn-acao btn-excluir" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
+                        <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" target="_blank" class="btn-acao btn-ver" title="Ver Anúncio"><i class="fa-solid fa-eye"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="sem-imoveis">
+        <p>Você ainda não cadastrou nenhum imóvel.</p>
+        <a href="#" class="btn btn-cadastrar">Cadastrar meu primeiro imóvel</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

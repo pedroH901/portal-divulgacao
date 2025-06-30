@@ -603,3 +603,190 @@ footer {
     text-align: center;
     padding: 4rem 2rem;
 }
+
+/* --- Estilos para a Paginação --- */
+.paginacao {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.page-item .page-link {
+    color: var(--cor-principal);
+    background-color: var(--cor-branco);
+    padding: 0.75rem 1.2rem;
+    display: block;
+    text-decoration: none;
+    border-right: 1px solid #ddd;
+    transition: background-color 0.2s;
+}
+
+.page-item:last-child .page-link {
+    border-right: none;
+}
+
+.page-item .page-link:hover {
+    background-color: #f4f4f4;
+}
+
+.page-item.active .page-link {
+    background-color: var(--cor-principal);
+    color: var(--cor-branco);
+    font-weight: bold;
+    cursor: default;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #e9ecef;
+}
+
+/* --- Estilos para a Página de Login --- */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+}
+
+.login-box {
+    background: var(--cor-branco);
+    padding: 2.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+}
+
+.login-box p {
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+.login-form .form-group {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* --- Estilos para o Dashboard --- */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: var(--cor-branco);
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.painel-container {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.painel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-cadastrar {
+    background-color: var(--cor-sucesso);
+}
+
+.tabela-imoveis-wrapper {
+    overflow-x: auto; /* Garante que a tabela seja rolável em telas pequenas */
+}
+
+.tabela-imoveis {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-imoveis th, .tabela-imoveis td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela-imoveis th {
+    background-color: #f9f9f9;
+}
+
+.tabela-imoveis tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+.status {
+    padding: 0.25rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--cor-branco);
+}
+
+.status-ativo {
+    background-color: var(--cor-sucesso);
+}
+
+.status-inativo {
+    background-color: #6c757d;
+}
+
+.acoes {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-acao {
+    color: var(--cor-texto);
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.btn-acao.btn-editar:hover { color: var(--cor-principal); }
+.btn-acao.btn-excluir:hover { color: #dc3545; }
+.btn-acao.btn-ver:hover { color: #17a2b8; }
+
+.sem-imoveis {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.sem-imoveis p {
+    margin-bottom: 1.5rem;
+}

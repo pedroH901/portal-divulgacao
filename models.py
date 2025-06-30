@@ -1,6 +1,7 @@
 # models.py
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_login import UserMixin
 
 # Cria a instância do SQLAlchemy que será usada em toda a aplicação.
 db = SQLAlchemy()
@@ -13,7 +14,7 @@ imovel_caracteristicas = db.Table('imovel_caracteristicas',
     db.Column('Id_caracteristica', db.Integer, db.ForeignKey('Caracteristicas.Id_caracteristica'), primary_key=True)
 )
 
-class Usuario(db.Model):
+class Usuario(db.Model, UserMixin):
     """ Mapeia a tabela 'Usuarios' do banco de dados. """
     __tablename__ = 'Usuarios'
     id_usuario = db.Column('Id_usuario', db.Integer, primary_key=True)
@@ -32,6 +33,9 @@ class Usuario(db.Model):
     # Relacionamentos: um usuário pode ter vários imóveis e ser responsável por vários leads.
     imoveis = db.relationship('Imovel', backref='anunciante', lazy=True)
     leads_responsavel = db.relationship('Lead', backref='responsavel', lazy=True, foreign_keys='Lead.id_usuario_responsavel')
+
+    def get_id(self):
+        return (self.id_usuario)
 
 class Imovel(db.Model):
     """ Mapeia a tabela 'Imoveis' do banco de dados. """
@@ -106,3 +110,4 @@ class ConfiguracaoSistema(db.Model):
     __tablename__ = 'ConfiguracoesSistema'
     chave = db.Column('Chave', db.String(50), primary_key=True)
     valor = db.Column('Valor', db.String(255), nullable=False)
+
