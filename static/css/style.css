@@ -219,11 +219,13 @@ footer {
     border-radius: var(--borda-radius);
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     margin-bottom: 2.5rem;
+    align-items: start; /* Impede que os itens da grid se estiquem verticalmente */
 }
 
 .bloco-imagem img {
     width: 100%;
-    height: 100%;
+    /* Removido o height: 100% para evitar o esticamento */
+    aspect-ratio: 4 / 3; /* Proporção da imagem (opcional, mas recomendado) */
     object-fit: cover;
     border-radius: var(--borda-radius);
 }
@@ -474,13 +476,30 @@ footer {
 
 /* Garante que o formulário comece escondido */
 .form-escondido {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0 !important;
+    transition: max-height 0.7s ease-in-out, opacity 0.5s ease, margin-top 0.5s ease;
+}
+
+.form-visivel {
+    max-height: 1000px; /* Um valor alto o suficiente para caber o formulário */
+    opacity: 1;
+    margin-top: 1.5rem !important; /* Adiciona o espaçamento de volta */
+}
+
+/* Garante que o H3 dentro do formulário também tenha uma transição */
+.form-visivel .form-title {
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
 }
 
 /* Deixa o botão principal "Tenho Interesse" VERDE */
 #gatilho-form.btn-contato {
     background-color: var(--cor-sucesso);
     width: 100%;
+    margin-top: 1rem; /* Adiciona um espaço acima do botão */
 }
 
 /* Garante que o botão de SUBMIT do formulário seja VERDE também */
