@@ -8,13 +8,14 @@
 </div>
 
 <div class="detalhe-bloco">
-    <div class="bloco-imagem">
-        {% if imovel.imagens %}
-            <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto principal de {{ imovel.titulo }}">
-        {% else %}
-            <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
-        {% endif %}
-    </div>
+<div class="bloco-imagem">
+    {% if imovel.imagens %}
+        {% set imagem_url = imovel.imagens[0].url_imagem %}
+        <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto principal de {{ imovel.titulo }}">
+    {% else %}
+        <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+    {% endif %}
+</div>
     <div class="bloco-info">
         <h1>{{ imovel.titulo }}</h1>
         <p class="localizacao">{{ imovel.bairro }}, {{ imovel.cidade }} - {{ imovel.estado }}</p>
@@ -82,14 +83,15 @@
     <h2>Outros imóveis que podem te interessar</h2>
     <div class="carrossel-wrapper">
         <button class="carrossel-btn btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="carrossel-track">
-            {% for outro_imovel in outros_imoveis %}
-                <div class="card-imovel">
-                    {% if outro_imovel.imagens %}
-                        <img src="{{ outro_imovel.imagens[0].url_imagem }}" alt="Foto do {{ outro_imovel.titulo }}">
-                    {% else %}
-                        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
-                    {% endif %}
+<div class="carrossel-track">
+    {% for outro_imovel in outros_imoveis %}
+        <div class="card-imovel">
+            {% if outro_imovel.imagens %}
+                {% set imagem_url = outro_imovel.imagens[0].url_imagem %}
+                <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ outro_imovel.titulo }}">
+            {% else %}
+                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+            {% endif %}
                     <div class="card-content">
                         <h3>{{ outro_imovel.titulo }}</h3>
                         <p class="preco">R$ {{ "%.2f"|format(outro_imovel.preco)|replace('.', ',') }}</p>

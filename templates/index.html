@@ -52,12 +52,13 @@
     <div class="grid-imoveis">
 
         {% for imovel in imoveis %}
-        <div class="card-imovel">
-            {% if imovel.imagens %}
-                <img src="{{ imovel.imagens[0].url_imagem }}" alt="Foto do {{ imovel.titulo }}">
-            {% else %}
-                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
-            {% endif %}
+<div class="card-imovel">
+    {% if imovel.imagens %}
+        {% set imagem_url = imovel.imagens[0].url_imagem %}
+        <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ imovel.titulo }}">
+    {% else %}
+        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+    {% endif %}
 
             <div class="card-content">
                 <h3>{{ imovel.titulo }}</h3>

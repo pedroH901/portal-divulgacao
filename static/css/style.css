@@ -790,3 +790,93 @@ footer {
 .sem-imoveis p {
     margin-bottom: 1.5rem;
 }
+
+.acoes form {
+    display: inline; /* Faz o formulário não quebrar a linha */
+}
+
+.btn-acao.btn-excluir {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.form-container-admin {
+    background: var(--cor-branco);
+    padding: 2.5rem;
+    border-radius: var(--borda-radius);
+}
+.form-container-admin h2 { margin-bottom: 2rem; }
+
+/* --- Estilos para os Formulários do Painel Admin --- */
+.form-container-admin {
+    background: var(--cor-branco);
+    padding: 2rem 2.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+.form-container-admin h2 { 
+    margin-bottom: 0.5rem;
+}
+.form-container-admin p { 
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+.admin-form .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.admin-form .form-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn-submit-admin {
+    margin-top: 1rem;
+    background-color: var(--cor-principal);
+    padding: 0.9rem 2rem;
+    font-weight: bold;
+}
+
+
+.form-group-checkboxes {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-wrapper label {
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+}

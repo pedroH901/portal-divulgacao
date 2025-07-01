@@ -14,7 +14,7 @@
 <div class="painel-container">
     <div class="painel-header">
         <h3>Meus Imóveis Cadastrados</h3>
-        <a href="#" class="btn btn-cadastrar">Cadastrar Novo Imóvel</a>
+        <a href="{{ url_for('cadastrar_imovel') }}" class="btn btn-cadastrar">Cadastrar Novo Imóvel</a>
     </div>
 
     {% if meus_imoveis %}
@@ -41,8 +41,12 @@
                         {% endif %}
                     </td>
                     <td class="acoes">
-                        <a href="#" class="btn-acao btn-editar" title="Editar"><i class="fa-solid fa-pencil"></i></a>
-                        <a href="#" class="btn-acao btn-excluir" title="Excluir"><i class="fa-solid fa-trash-can"></i></a>
+                        <a href="{{ url_for('editar_imovel', imovel_id=imovel.id_imovel) }}" class="btn-acao btn-editar" title="Editar"><i class="fa-solid fa-pencil"></i></a>
+                        <form method="POST" action="{{ url_for('excluir_imovel', imovel_id=imovel.id_imovel) }}" onsubmit="return confirm('Tem certeza que deseja excluir este imóvel? Esta ação não pode ser desfeita.');">
+                            <button type="submit" class="btn-acao btn-excluir" title="Excluir">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </form>
                         <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" target="_blank" class="btn-acao btn-ver" title="Ver Anúncio"><i class="fa-solid fa-eye"></i></a>
                     </td>
                 </tr>
@@ -53,7 +57,7 @@
     {% else %}
     <div class="sem-imoveis">
         <p>Você ainda não cadastrou nenhum imóvel.</p>
-        <a href="#" class="btn btn-cadastrar">Cadastrar meu primeiro imóvel</a>
+        <p>Clique no botão acima para cadastrar seu primeiro imóvel!</p>
     </div>
     {% endif %}
 </div>

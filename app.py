@@ -1,7 +1,9 @@
 # app.py
 from urllib.parse import quote_plus
 from flask import Flask, render_template, request, flash, redirect, url_for, abort
-from models import db, Imovel, Lead, Usuario # Importe todos os modelos necessários
+import os
+from werkzeug.utils import secure_filename
+from models import ImagemImovel, db, Imovel, Lead, Usuario # Importe todos os modelos necessários
 from flask_login import LoginManager, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 
@@ -11,6 +13,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'uma-chave-secreta-bem-aleatoria-para-seguranca'
 SERVER_NAME = 'localhost'
 DATABASE_NAME = 'SeuNovoImovel'
+app.config['UPLOAD_FOLDER'] = 'static/uploads/imoveis'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 connection_string = (
     f"DRIVER={{ODBC Driver 18 for SQL Server}};"
@@ -22,18 +26,21 @@ connection_string = (
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={connection_string.replace(';', '%3B')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializa as extensões com a aplicação
+# Inicializa as extensões
 db.init_app(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
-login_manager.login_message_category = 'info'
 login_manager.login_message = "Por favor, faça o login para acessar esta página."
+login_manager.login_message_category = 'info'
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return db.session.get(Usuario, int(user_id))
 
 # --- Rotas Públicas ---
 
@@ -41,7 +48,6 @@ def load_user(user_id):
 def index():
     imoveis = Imovel.query.filter(Imovel.data_exclusao.is_(None)).order_by(Imovel.destaque_ordem.desc()).all()
     return render_template('index.html', imoveis=imoveis)
-
 
 @app.route('/imovel/<int:imovel_id>', methods=['GET', 'POST'])
 def imovel_detalhes(imovel_id):
@@ -160,6 +166,92 @@ def dashboard():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/imovel/<int:imovel_id>/excluir', methods=['POST'])
+@login_required
+def excluir_imovel(imovel_id):
+    imovel = db.get_or_404(Imovel, imovel_id)
+    
+    # NOVA VERIFICAÇÃO DE PERMISSÃO:
+    # Permite a ação se o usuário for o dono do imóvel OU um admin.
+    if imovel.anunciante != current_user and current_user.tipo_usuario != 'admin':
+        flash('Você não tem permissão para executar esta ação.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Se a permissão estiver OK, deleta o imóvel
+    db.session.delete(imovel)
+    db.session.commit()
+    
+    flash('Imóvel excluído com sucesso!', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/imovel/<int:imovel_id>/editar', methods=['GET', 'POST'])
+@login_required
+def editar_imovel(imovel_id):
+    imovel = db.get_or_404(Imovel, imovel_id)
+    
+     # NOVA VERIFICAÇÃO DE PERMISSÃO (exatamente a mesma lógica):
+    if imovel.anunciante != current_user and current_user.tipo_usuario != 'admin':
+        flash('Você não tem permissão para executar esta ação.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        # Pega os dados do formulário e atualiza o objeto do imóvel
+        imovel.titulo = request.form['titulo']
+        imovel.descricao = request.form['descricao']
+        imovel.preco = request.form['preco']
+        imovel.bairro = request.form['bairro']
+        imovel.cidade = request.form['cidade']
+        # ... (adicione todos os outros campos que você quer que sejam editáveis)
+        
+        db.session.commit()
+        flash('Imóvel atualizado com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+
+    # Se for GET, apenas mostra o formulário pré-preenchido
+    return render_template('editar_imovel.html', title='Editar Imóvel', imovel=imovel)
+
+@app.route('/imovel/novo', methods=['GET', 'POST'])
+@login_required
+def cadastrar_imovel():
+    if request.method == 'POST':
+        novo_imovel = Imovel(
+            titulo=request.form['titulo'],
+            descricao=request.form.get('descricao'),
+            preco=request.form.get('preco'),
+            finalidade=request.form.get('finalidade'),
+            cidade=request.form.get('cidade'),
+            bairro=request.form.get('bairro'),
+            area_construida=request.form.get('area_construida'),
+            quartos=request.form.get('quartos', type=int, default=0),
+            banheiros=request.form.get('banheiros', type=int, default=0),
+            vagas=request.form.get('vagas', type=int, default=0),
+            vagas_cobertas=request.form.get('vagas_cobertas', type=int, default=0),
+            piscina=1 if 'piscina' in request.form else 0,
+            area_gourmet=1 if 'area_gourmet' in request.form else 0,
+            id_usuario=current_user.id_usuario
+        )
+        db.session.add(novo_imovel)
+        db.session.commit()
+
+        files = request.files.getlist('imagens')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                
+                nova_imagem = ImagemImovel(
+                    url_imagem=os.path.join('uploads', 'imoveis', filename).replace('\\', '/'),
+                    id_imovel=novo_imovel.id_imovel
+                )
+                db.session.add(nova_imagem)
+        
+        db.session.commit()
+        flash('Novo imóvel cadastrado com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+    
+    return render_template('cadastrar_imovel.html', title='Cadastrar Novo Imóvel')
 
 
 # Ponto de entrada para rodar a aplicação
