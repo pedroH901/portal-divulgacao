@@ -46,8 +46,14 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    imoveis = Imovel.query.filter(Imovel.data_exclusao.is_(None)).order_by(Imovel.destaque_ordem.desc()).all()
-    return render_template('index.html', imoveis=imoveis)
+    """ Rota da página inicial com paginação. """
+    page = request.args.get('page', 1, type=int)
+    pagination = Imovel.query.filter(Imovel.data_exclusao.is_(None)).order_by(Imovel.destaque_ordem.desc()).paginate(
+        page=page, per_page=6, error_out=False
+    )
+    imoveis = pagination.items
+    return render_template('index.html', imoveis=imoveis, pagination=pagination)
+
 
 @app.route('/imovel/<int:imovel_id>', methods=['GET', 'POST'])
 def imovel_detalhes(imovel_id):
@@ -190,25 +196,46 @@ def excluir_imovel(imovel_id):
 def editar_imovel(imovel_id):
     imovel = db.get_or_404(Imovel, imovel_id)
     
-     # NOVA VERIFICAÇÃO DE PERMISSÃO (exatamente a mesma lógica):
+    # Verificação de permissão (dono do imóvel ou admin)
     if imovel.anunciante != current_user and current_user.tipo_usuario != 'admin':
-        flash('Você não tem permissão para executar esta ação.', 'danger')
-        return redirect(url_for('dashboard'))
+        abort(403) # Erro de "Proibido"
 
     if request.method == 'POST':
-        # Pega os dados do formulário e atualiza o objeto do imóvel
+        # 1. Atualiza todos os campos com os dados do formulário
         imovel.titulo = request.form['titulo']
         imovel.descricao = request.form['descricao']
         imovel.preco = request.form['preco']
+        imovel.finalidade = request.form['finalidade']
         imovel.bairro = request.form['bairro']
         imovel.cidade = request.form['cidade']
-        # ... (adicione todos os outros campos que você quer que sejam editáveis)
+        imovel.area_construida = request.form.get('area_construida')
+        imovel.quartos = request.form.get('quartos', type=int)
+        imovel.banheiros = request.form.get('banheiros', type=int)
+        imovel.vagas = request.form.get('vagas', type=int)
+        imovel.vagas_cobertas = request.form.get('vagas_cobertas', type=int)
+        imovel.piscina = 1 if 'piscina' in request.form else 0
+        imovel.area_gourmet = 1 if 'area_gourmet' in request.form else 0
         
+        # 2. Lógica para adicionar novas fotos (as antigas não são apagadas)
+        files = request.files.getlist('imagens')
+        for file in files:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                
+                nova_imagem = ImagemImovel(
+                    url_imagem=os.path.join('uploads', 'imoveis', filename).replace('\\', '/'),
+                    id_imovel=imovel.id_imovel
+                )
+                db.session.add(nova_imagem)
+
+        # 3. Salva todas as alterações no banco de dados
         db.session.commit()
         flash('Imóvel atualizado com sucesso!', 'success')
         return redirect(url_for('dashboard'))
 
-    # Se for GET, apenas mostra o formulário pré-preenchido
+    # Se a requisição for GET, apenas mostra a página com o formulário pré-preenchido
     return render_template('editar_imovel.html', title='Editar Imóvel', imovel=imovel)
 
 @app.route('/imovel/novo', methods=['GET', 'POST'])
@@ -252,6 +279,80 @@ def cadastrar_imovel():
         return redirect(url_for('dashboard'))
     
     return render_template('cadastrar_imovel.html', title='Cadastrar Novo Imóvel')
+
+@app.route('/registrar', methods=['GET', 'POST'])
+def registrar():
+    # Se o usuário já estiver logado, não faz sentido ver esta página
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
+
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        confirmar_senha = request.form.get('confirmar_senha')
+
+        # --- Validações ---
+        # 1. Verifica se a senha e a confirmação são iguais
+        if senha != confirmar_senha:
+            flash('As senhas não coincidem. Por favor, tente novamente.', 'danger')
+            return redirect(url_for('registrar'))
+
+        # 2. Verifica se o e-mail já existe no banco de dados
+        usuario_existente = Usuario.query.filter_by(email=email).first()
+        if usuario_existente:
+            flash('Este endereço de e-mail já está em uso. Por favor, faça o login.', 'warning')
+            return redirect(url_for('login'))
+
+        # --- Criação do Usuário ---
+        # 3. Criptografa a senha antes de salvar
+        hash_senha = bcrypt.generate_password_hash(senha).decode('utf-8')
+        
+        # 4. Cria o novo usuário (definindo como 'corretor' por padrão)
+        novo_usuario = Usuario(
+            nome=nome, 
+            email=email, 
+            senha_hash=hash_senha, 
+            tipo_usuario='corretor'
+        )
+        
+        # 5. Salva o novo usuário no banco
+        db.session.add(novo_usuario)
+        db.session.commit()
+
+        flash('Conta criada com sucesso! Agora você já pode fazer o login.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('registrar.html', title='Registrar')
+
+@app.route('/imagem/<int:imagem_id>/excluir', methods=['POST'])
+@login_required
+def excluir_imagem(imagem_id):
+    """ Rota para excluir uma imagem específica de um imóvel. """
+    imagem = db.get_or_404(ImagemImovel, imagem_id)
+    imovel = imagem.imovel # Acessa o imóvel "pai" através do backref
+
+    # Verificação de permissão: só o dono do imóvel ou um admin pode excluir.
+    if imovel.anunciante != current_user and current_user.tipo_usuario != 'admin':
+        flash('Você não tem permissão para excluir esta imagem.', 'danger')
+        return redirect(url_for('editar_imovel', imovel_id=imovel.id_imovel))
+
+    try:
+        # Tenta apagar o arquivo físico do servidor
+        caminho_arquivo = os.path.join(app.config['UPLOAD_FOLDER'], os.path.basename(imagem.url_imagem))
+        if os.path.exists(caminho_arquivo):
+            os.remove(caminho_arquivo)
+    except Exception as e:
+        # Se não conseguir apagar o arquivo, apenas avisa no terminal, mas continua.
+        print(f"AVISO: Não foi possível apagar o arquivo físico da imagem. Erro: {e}")
+
+    # Apaga o registro da imagem do banco de dados
+    db.session.delete(imagem)
+    db.session.commit()
+
+    flash('Imagem excluída com sucesso!', 'success')
+    # Redireciona de volta para a mesma página de edição
+    return redirect(url_for('editar_imovel', imovel_id=imovel.id_imovel))
 
 
 # Ponto de entrada para rodar a aplicação

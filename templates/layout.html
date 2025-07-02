@@ -3,30 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Portal de Imóveis{% endblock %}</title>
+    <title>{% block title %}Seu Novo Imóvel{% endblock %}</title>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
     {% include 'header.html' %}
 
-    <!-- Em templates/layout.html -->
-<main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+    <main class="container">
+        {# Bloco para exibir mensagens flash (sucesso, erro, etc.) #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-    {% block content %}{% endblock %}
-</main>
+        {# Bloco onde o conteúdo de cada página individual será inserido #}
+        {% block content %}{% endblock %}
+    </main>
 
     {% include 'footer.html' %}
 
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para o menu dropdown do usuário
+            const userMenuTrigger = document.querySelector('.user-menu-trigger');
+            if (userMenuTrigger) {
+                const userMenu = userMenuTrigger.parentElement;
+                userMenuTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    userMenu.classList.toggle('is-open');
+                });
+            }
+
+            // Lógica para o menu hambúrguer mobile
+            const hamburgerBtn = document.querySelector('.hamburger-btn');
+            const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+            const mobileNav = document.querySelector('.mobile-nav');
+
+            if (hamburgerBtn && mobileNavOverlay) {
+                // Copia os links para o menu mobile
+                const mainNav = document.querySelector('.main-nav ul').cloneNode(true);
+                const userActions = document.querySelector('.user-actions').cloneNode(true);
+                mobileNav.appendChild(mainNav);
+                mobileNav.appendChild(userActions);
+
+                hamburgerBtn.addEventListener('click', () => {
+                    mobileNavOverlay.classList.toggle('is-open');
+                });
+
+                mobileNavOverlay.addEventListener('click', (e) => {
+                    if (e.target === mobileNavOverlay) {
+                        mobileNavOverlay.classList.remove('is-open');
+                    }
+                });
+            }
+
+            // Fecha o dropdown do usuário se clicar fora
+            document.addEventListener('click', () => {
+                const userMenu = document.querySelector('.user-menu');
+                if (userMenu && userMenu.classList.contains('is-open')) {
+                    userMenu.classList.remove('is-open');
+                }
+            });
+        });
+    </script>
+    
+    {% endblock %}
 </body>
 </html>

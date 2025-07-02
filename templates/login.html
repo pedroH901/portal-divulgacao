@@ -8,8 +8,8 @@
 </div>
 <div class="login-container">
     <div class="login-box">
-        <h2>Acesso ao Painel</h2>
-        <p>Use suas credenciais para acessar o sistema.</p>
+    <h2>Acesse sua Conta</h2>
+    <p>Use suas credenciais para entrar no portal.</p>
         <form method="POST" action="{{ url_for('login') }}" class="login-form">
             <div class="form-group">
                 <label for="email">E-mail</label>
@@ -21,6 +21,7 @@
             </div>
             <button type="submit" class="btn btn-login">Entrar</button>
         </form>
+        <p class="auth-switch">Ainda não tem uma conta? <a href="{{ url_for('registrar') }}">Cadastre-se aqui</a></p>
     </div>
 </div>
 {% endblock %}

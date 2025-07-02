@@ -1,10 +1,40 @@
-<header>
-    <div class="container">
+<header class="main-header">
+    <div class="container header-container">
         <a href="{{ url_for('index') }}" id="logo">Seu Novo Imóvel</a>
-        <nav>
+        
+        <nav class="main-nav">
             <ul>
-                <li><a href="{{ url_for('index') }}">Início</a></li>
+                <li><a href="{{ url_for('index') }}">Comprar</a></li>
+                <li><a href="{{ url_for('index') }}">Alugar</a></li>
+                <li><a href="#">Lançamentos</a></li>
+                <li><a href="{{ url_for('cadastrar_imovel')}}">Anunciar Imóvel</a></li>
             </ul>
         </nav>
+
+        <div class="user-actions">
+            {% if current_user.is_authenticated %}
+                <div class="user-menu">
+                    <button type="button" class="user-menu-trigger">
+                        Olá, {{ current_user.nome.split()[0] }} <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="user-menu-dropdown">
+                        <a href="{{ url_for('dashboard') }}">Meu Painel</a>
+                        <a href="#">Minha Conta</a>
+                        <a href="{{ url_for('logout') }}" class="logout-link">Sair</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-login-header">Entrar</a>
+            {% endif %}
+        </div>
+
+        <button type="button" class="hamburger-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
 </header>
+
+<div class="mobile-nav-overlay">
+    <nav class="mobile-nav">
+        </nav>
+</div>

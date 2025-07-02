@@ -8,30 +8,97 @@
 </div>
 
 <div class="form-container-admin">
-    <h2>Editando: {{ imovel.titulo }}</h2>
+    <h2>Editando: <span class="titulo-editavel">{{ imovel.titulo }}</span></h2>
     
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data" class="admin-form">
         <div class="form-group">
-            <label for="titulo">Título do Anúncio</label>
+            <label for="titulo">Título do Anúncio *</label>
             <input type="text" name="titulo" class="form-control" value="{{ imovel.titulo }}" required>
         </div>
         <div class="form-group">
             <label for="descricao">Descrição</label>
-            <textarea name="descricao" class="form-control" rows="5">{{ imovel.descricao }}</textarea>
+            <textarea name="descricao" class="form-control" rows="5">{{ imovel.descricao or '' }}</textarea>
         </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="preco">Preço (R$) *</label>
+                <input type="number" step="0.01" name="preco" class="form-control" value="{{ imovel.preco }}" required>
+            </div>
+            <div class="form-group">
+                <label for="finalidade">Finalidade *</label>
+                <select name="finalidade" class="form-control" required>
+                    <option value="Venda" {% if imovel.finalidade == 'Venda' %}selected{% endif %}>Venda</option>
+                    <option value="Aluguel" {% if imovel.finalidade == 'Aluguel' %}selected{% endif %}>Aluguel</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cidade">Cidade</label>
+                <input type="text" name="cidade" class="form-control" value="{{ imovel.cidade or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro</label>
+                <input type="text" name="bairro" class="form-control" value="{{ imovel.bairro or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="area_construida">Área Construída (m²)</label>
+                <input type="number" step="0.01" name="area_construida" class="form-control" value="{{ imovel.area_construida or '' }}">
+            </div>
+             <div class="form-group">
+                <label for="quartos">Quartos</label>
+                <input type="number" name="quartos" class="form-control" value="{{ imovel.quartos or 0 }}">
+            </div>
+            <div class="form-group">
+                <label for="banheiros">Banheiros</label>
+                <input type="number" name="banheiros" class="form-control" value="{{ imovel.banheiros or 0 }}">
+            </div>
+            <div class="form-group">
+                <label for="vagas">Vagas de Garagem</label>
+                <input type="number" name="vagas" class="form-control" value="{{ imovel.vagas or 0 }}">
+            </div>
+             <div class="form-group">
+                <label for="vagas_cobertas">Vagas Cobertas</label>
+                <input type="number" name="vagas_cobertas" class="form-control" value="{{ imovel.vagas_cobertas or 0 }}">
+            </div>
+        </div>
+
+        <div class="form-group-checkboxes">
+            <div class="checkbox-wrapper">
+                <input type="checkbox" name="piscina" id="piscina" value="1" {% if imovel.piscina == 1 %}checked{% endif %}>
+                <label for="piscina">Tem Piscina</label>
+            </div>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" name="area_gourmet" id="area_gourmet" value="1" {% if imovel.area_gourmet == 1 %}checked{% endif %}>
+                <label for="area_gourmet">Tem Área Gourmet</label>
+            </div>
+        </div>
+        
         <div class="form-group">
-            <label for="preco">Preço (R$)</label>
-            <input type="number" step="0.01" name="preco" class="form-control" value="{{ imovel.preco }}" required>
+            <label for="imagens">Adicionar Novas Fotos (as fotos existentes serão mantidas)</label>
+            <input type="file" name="imagens" id="imagens" class="form-control" multiple>
         </div>
-        <div class="form-group">
-            <label for="bairro">Bairro</label>
-            <input type="text" name="bairro" class="form-control" value="{{ imovel.bairro }}">
-        </div>
-        <div class="form-group">
-            <label for="cidade">Cidade</label>
-            <input type="text" name="cidade" class="form-control" value="{{ imovel.cidade }}">
-        </div>
-        <button type="submit" class="btn">Salvar Alterações</button>
+        
+        <button type="submit" class="btn btn-submit-admin">Salvar Alterações</button>
     </form>
+
+    <hr class="form-divider">
+    <h3>Imagens Atuais</h3>
+{% if imovel.imagens %}
+    <div class="galeria-edicao">
+        {% for imagem in imovel.imagens %}
+            <div class="imagem-edicao-card">
+                <img src="{{ url_for('static', filename=imagem.url_imagem) }}" alt="Imagem {{ loop.index }}">
+                
+                <form method="POST" action="{{ url_for('excluir_imagem', imagem_id=imagem.id_imagem) }}" onsubmit="return confirm('Tem certeza que deseja excluir esta imagem?');">
+                    <button type="submit" class="btn-excluir-img">Excluir</button>
+                </form>
+
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Este imóvel ainda não possui imagens.</p>
+{% endif %}
+
 </div>
 {% endblock %}
