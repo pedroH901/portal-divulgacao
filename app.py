@@ -354,6 +354,47 @@ def excluir_imagem(imagem_id):
     # Redireciona de volta para a mesma página de edição
     return redirect(url_for('editar_imovel', imovel_id=imovel.id_imovel))
 
+@app.route('/comprar')
+def comprar():
+    """
+    Mostra todos os imóveis disponíveis para Venda, com paginação.
+    """
+    page = request.args.get('page', 1, type=int)
+    
+    # A consulta agora filtra especificamente por Finalidade == 'Venda'
+    pagination = Imovel.query.filter_by(finalidade='Venda', data_exclusao=None)\
+                             .order_by(Imovel.destaque_ordem.desc())\
+                             .paginate(page=page, per_page=9, error_out=False)
+    
+    imoveis_a_venda = pagination.items
+
+    return render_template(
+        'comprar.html', 
+        imoveis=imoveis_a_venda,
+        title='Imóveis à Venda',
+        pagination=pagination
+    )
+
+@app.route('/alugar')
+def alugar():
+    """
+    Mostra todos os imóveis disponíveis para Aluguel, com paginação.
+    """
+    page = request.args.get('page', 1, type=int)
+    
+    # A única mudança é aqui: filtramos por 'Aluguel'
+    pagination = Imovel.query.filter_by(finalidade='Aluguel', data_exclusao=None)\
+                             .order_by(Imovel.destaque_ordem.desc())\
+                             .paginate(page=page, per_page=9, error_out=False)
+    
+    imoveis_para_alugar = pagination.items
+
+    return render_template(
+        'alugar.html', 
+        imoveis=imoveis_para_alugar,
+        title='Imóveis para Alugar',
+        pagination=pagination
+    )
 
 # Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':

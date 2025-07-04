@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+    {% include 'includes/search_bar.html' %}
+
+    <section class="destaques">
+        <h2>{{ title }}</h2>
+        <div class="grid-imoveis">
+            {% if imoveis %}
+                {% for imovel in imoveis %}
+                    <div class="card-imovel">
+                        {% if imovel.imagens %}
+                            {% set imagem_url = imovel.imagens[0].url_imagem %}
+                            <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ imovel.titulo }}">
+                        {% else %}
+                            <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                        {% endif %}
+                        <div class="card-content">
+                            <h3>{{ imovel.titulo }}</h3>
+                            <p class="preco">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                            <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="sem-resultados">
+                    <h2>Nenhum imóvel à venda encontrado no momento.</h2>
+                    <p>Continue navegando em nossos <a href="{{ url_for('index') }}">destaques</a>.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <nav class="paginacao" aria-label="Navegação das páginas">
+        {% if pagination and pagination.pages > 1 %}
+        <ul class="pagination-list">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('comprar', page=pagination.prev_num) }}">&laquo; Anterior</a>
+            </li>
+            {% for page_num in pagination.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {% if pagination.page == page_num %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('comprar', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('comprar', page=pagination.next_num) }}">Próxima &raquo;</a>
+            </li>
+        </ul>
+        {% endif %}
+    </nav>
+{% endblock %}

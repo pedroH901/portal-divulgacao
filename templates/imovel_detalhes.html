@@ -8,13 +8,23 @@
 </div>
 
 <div class="detalhe-bloco">
-<div class="bloco-imagem">
-    {% if imovel.imagens %}
-        {% set imagem_url = imovel.imagens[0].url_imagem %}
-        <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto principal de {{ imovel.titulo }}">
-    {% else %}
-        <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+<div class="galeria-container">
+    <div class="galeria-imagem-principal">
+        {% if imovel.imagens %}
+            <img id="imagem-principal" src="{{ imovel.imagens[0].url_imagem if imovel.imagens[0].url_imagem.startswith('http') else url_for('static', filename=imovel.imagens[0].url_imagem) }}" alt="Foto principal de {{ imovel.titulo }}">
+        {% else %}
+            <img src="https://placehold.co/800x600/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+        {% endif %}
+    </div>
+    
+    {% if imovel.imagens|length > 1 %}
+    <div class="galeria-thumbnails">
+        {% for imagem in imovel.imagens %}
+        <img class="thumbnail-item" src="{{ imagem.url_imagem if imagem.url_imagem.startswith('http') else url_for('static', filename=imagem.url_imagem) }}" alt="Thumbnail {{ loop.index }} de {{ imovel.titulo }}">
+        {% endfor %}
+    </div>
     {% endif %}
+
 </div>
     <div class="bloco-info">
         <h1>{{ imovel.titulo }}</h1>
@@ -133,6 +143,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.style.display = 'none'; // Esconde o botão "Tenho Interesse"
             }
         });
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ... (código anterior do carrossel e formulário) ...
+
+    // --- NOVA LÓGICA PARA A GALERIA DE IMAGENS ---
+    const imagemPrincipal = document.getElementById('imagem-principal');
+    const thumbnails = document.querySelectorAll('.thumbnail-item');
+
+    if (imagemPrincipal && thumbnails.length > 0) {
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Remove a classe 'active' de todas as thumbnails
+                thumbnails.forEach(t => t.classList.remove('active'));
+                // Adiciona a classe 'active' na thumbnail clicada
+                this.classList.add('active');
+                // Troca a imagem principal pela imagem da thumbnail clicada
+                imagemPrincipal.src = this.src;
+            });
+        });
+        // Adiciona a classe 'active' na primeira thumbnail por padrão
+        thumbnails[0].classList.add('active');
     }
 });
 </script>
