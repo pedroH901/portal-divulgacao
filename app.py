@@ -396,6 +396,17 @@ def alugar():
         pagination=pagination
     )
 
+@app.route('/termos-de-uso')
+def termos_de_uso():
+    """ Rota para a página de Termos de Uso. """
+    return render_template('termos_de_uso.html', title='Termos de Uso')
+
+@app.route('/politica-de-privacidade')
+def politica_de_privacidade():
+    """ Rota para a página de Política de Privacidade. """
+    return render_template('politica_de_privacidade.html', title='Política de Privacidade')
+
+
 # Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':
     app.run(debug=True)

@@ -53,7 +53,7 @@ header {
 }
 
 header #logo {
-    color: var(--cor-branco);
+    color: black;
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: bold;
@@ -881,15 +881,12 @@ footer {
     cursor: pointer;
 }
 
-/* ==========================================================================
-   Novo Header Profissional
-   ========================================================================== */
 .main-header {
     background: var(--cor-branco);
     color: var(--cor-texto);
     padding: 1rem 0;
     border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -901,45 +898,77 @@ footer {
     align-items: center;
 }
 
-#logo { /* Sobrescreve o estilo antigo */
+#logo {
     color: var(--cor-principal);
     font-weight: 700;
+    text-decoration: none;
+    font-size: 1.6rem;
+}
+
+.main-nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
 }
 
 .main-nav ul {
     list-style: none;
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem;
+    padding: 0;
+    margin: 0;
 }
 
 .main-nav ul a {
     text-decoration: none;
-    color: var(--cor-texto);
-    font-weight: 500;
+    color: #555;
+    font-weight: 600;
+    font-size: 1.05rem;
     position: relative;
-    padding-bottom: 5px;
+    padding: 0.5rem 0;
 }
+
 .main-nav ul a::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
-    height: 2px;
+    height: 3px;
     background-color: var(--cor-principal);
     transition: width 0.3s ease;
 }
+
 .main-nav ul a:hover::after {
     width: 100%;
 }
 
-.user-actions .btn-login-header {
-    background-color: var(--cor-principal);
-    color: var(--cor-branco);
-    padding: 0.6rem 1.5rem;
-    border-radius: 5px;
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header-actions .search-icon, 
+.header-actions .login-link {
+    color: #555;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.btn-anunciar {
+    background-color: #f77f00;
+    color: var(--cor-branco);
+    padding: 0.7rem 1.5rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.btn-anunciar:hover {
+    background-color: #d66c00;
+    filter: none;
 }
 
 /* Menu do Usuário Logado */
@@ -951,10 +980,15 @@ footer {
     border: none;
     cursor: pointer;
     font-size: 1rem;
+    font-family: inherit;
     font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+.user-menu-trigger .fa-circle-user {
+    font-size: 1.8rem;
+    color: var(--cor-principal);
 }
 .user-menu-trigger .fa-chevron-down {
     font-size: 0.7rem;
@@ -963,6 +997,7 @@ footer {
 .user-menu.is-open .user-menu-trigger .fa-chevron-down {
     transform: rotate(180deg);
 }
+
 .user-menu-dropdown {
     position: absolute;
     top: 150%;
@@ -970,14 +1005,17 @@ footer {
     background: var(--cor-branco);
     border-radius: var(--borda-radius);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    width: 180px;
+    width: 200px;
     overflow: hidden;
-    display: none;
+    /* A MÁGICA ESTÁ AQUI: escondido por padrão */
+    display: none; 
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1002;
 }
 .user-menu.is-open .user-menu-dropdown {
+    /* Mostra quando a classe .is-open é adicionada */
     display: block;
     opacity: 1;
     transform: translateY(0);
@@ -998,7 +1036,7 @@ footer {
 
 /* Menu Mobile */
 .hamburger-btn {
-    display: none; /* Escondido no desktop */
+    display: none;
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -1144,4 +1182,60 @@ footer {
 .thumbnail-item.active {
     border-color: var(--cor-principal);
     box-shadow: 0 0 10px rgba(7, 121, 228, 0.5);
+}
+
+/* --- Estilos para Páginas Estáticas (Termos, Privacidade, etc.) --- */
+.static-page-container {
+    background: var(--cor-branco);
+    padding: 2.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.static-page-container h1 {
+    margin-bottom: 0.5rem;
+}
+
+.static-page-container .last-updated {
+    color: #888;
+    margin-bottom: 2rem;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.static-page-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.static-page-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.static-page-content p, .static-page-content li {
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* --- Estilos para o Rodapé --- */
+.footer-links {
+    margin-bottom: 1rem;
+}
+
+.footer-links a {
+    color: #ccc;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--cor-branco);
+}
+
+.footer-links span {
+    color: #666;
 }

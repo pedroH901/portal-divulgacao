@@ -76,6 +76,56 @@
             });
         });
     </script>
+
+ <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para o menu dropdown do usuário
+            const userMenuTrigger = document.querySelector('.user-menu-trigger');
+            if (userMenuTrigger) {
+                const userMenu = userMenuTrigger.closest('.user-menu'); // Usar closest é mais seguro
+                userMenuTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Impede que o clique se propague para o document
+                    userMenu.classList.toggle('is-open');
+                });
+            }
+
+            // Lógica para o menu hambúrguer mobile
+            const hamburgerBtn = document.querySelector('.hamburger-btn');
+            const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
+            const mobileNav = document.querySelector('.mobile-nav');
+
+            if (hamburgerBtn && mobileNavOverlay && mobileNav) {
+                // Limpa o menu mobile antes de clonar para evitar duplicatas
+                mobileNav.innerHTML = ''; 
+                
+                // Clona e adiciona os links de navegação e as ações
+                const mainNavClone = document.querySelector('.main-nav').cloneNode(true);
+                const headerActionsClone = document.querySelector('.header-actions').cloneNode(true);
+                mobileNav.appendChild(mainNavClone);
+                mobileNav.appendChild(headerActionsClone);
+
+                hamburgerBtn.addEventListener('click', () => {
+                    mobileNavOverlay.classList.toggle('is-open');
+                });
+
+                mobileNavOverlay.addEventListener('click', (e) => {
+                    if (e.target === mobileNavOverlay) {
+                        mobileNavOverlay.classList.remove('is-open');
+                    }
+                });
+            }
+
+            // Fecha o dropdown do usuário se clicar fora dele
+            document.addEventListener('click', () => {
+                const userMenu = document.querySelector('.user-menu.is-open');
+                if (userMenu) {
+                    userMenu.classList.remove('is-open');
+                }
+            });
+        });
+    </script>
+    
+    
     
     {% endblock %}
 </body>
