@@ -14,16 +14,21 @@
             {% if current_user.is_authenticated %}
                 <div class="user-menu">
                     <button type="button" class="user-menu-trigger">
-                        <i class="fa-solid fa-circle-user"></i>
+                                {% if current_user.foto_perfil %}
+            <img src="{{ url_for('static', filename=current_user.foto_perfil) }}" alt="Foto de {{ current_user.nome }}" class="header-perfil-img">
+        {% else %}
+            <i class="fa-solid fa-circle-user"></i>
+        {% endif %}
                         <span>Olá, {{ current_user.nome.split()[0] }}</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
 <div class="user-menu-dropdown">
-    <a href="{{ url_for('dashboard') }}">Meu Painel</a>
-    <a href="{{ url_for('minha_conta') }}">Minha Conta</a>
-    <a href="{{ url_for('anunciar') }}">Anunciar Imóvel</a>
-    <a href="{{ url_for('logout') }}" class="logout-link">Sair</a>
+    <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-table-columns"></i> Meu Painel</a>
+    <a href="{{ url_for('minha_conta') }}"><i class="fa-solid fa-user-pen"></i> Minha Conta</a>
+    <a href="{{ url_for('anunciar') }}"><i class="fa-solid fa-plus-circle"></i> Anunciar Imóvel</a>
+    <a href="{{ url_for('logout') }}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
 </div>
+
                 </div>
             {% else %}
                 <a href="{{ url_for('registrar') }}" class="btn btn-anunciar">Anunciar Imóvel</a>

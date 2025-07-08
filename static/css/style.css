@@ -1033,16 +1033,18 @@ footer {
     transform: rotate(180deg);
 }
 
+/* Em style.css, na seção do Header */
+
 .user-menu-dropdown {
     position: absolute;
-    top: 150%;
+    top: 160%; /* Um pouco mais de espaço */
     right: 0;
     background: var(--cor-branco);
     border-radius: var(--borda-radius);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    width: 200px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12); /* Sombra mais pronunciada */
+    width: 220px;
+    border: 1px solid #eee;
     overflow: hidden;
-    /* A MÁGICA ESTÁ AQUI: escondido por padrão */
     display: none; 
     opacity: 0;
     transform: translateY(10px);
@@ -1050,25 +1052,34 @@ footer {
     z-index: 1002;
 }
 .user-menu.is-open .user-menu-dropdown {
-    /* Mostra quando a classe .is-open é adicionada */
     display: block;
     opacity: 1;
     transform: translateY(0);
 }
+
 .user-menu-dropdown a {
-    display: block;
-    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem; /* Espaço entre ícone e texto */
+    padding: 0.9rem 1.2rem;
     text-decoration: none;
     color: var(--cor-texto);
+    font-weight: 500;
 }
 .user-menu-dropdown a:hover {
-    background-color: #f5f5f5;
+    background-color: #f8f9fa;
+    color: var(--cor-principal);
 }
+
 .user-menu-dropdown .logout-link {
     border-top: 1px solid #e0e0e0;
     color: #d9534f;
+    font-weight: 600;
 }
-
+.user-menu-dropdown .logout-link:hover {
+    background-color: #d9534f;
+    color: var(--cor-branco);
+}
 /* Menu Mobile */
 .hamburger-btn {
     display: none;
@@ -1403,4 +1414,140 @@ footer {
 .atalho-card p {
     font-size: 0.9rem;
     color: #666;
+}
+
+/* --- Estilos para a Tabela de Leads --- */
+
+/* Ajusta o padding e o alinhamento de todas as células */
+.tabela-imoveis td, .tabela-imoveis th {
+    padding: 1rem 1.2rem; /* Aumenta o espaçamento interno */
+    vertical-align: middle; /* Alinha o conteúdo no meio da célula */
+}
+
+/* Estilo para a coluna de Contato, para dar mais destaque */
+.tabela-imoveis td:nth-child(4) {
+    line-height: 1.5;
+}
+
+/* Estilo para o link do imóvel na tabela */
+.tabela-imoveis a {
+    color: var(--cor-principal);
+    font-weight: 500;
+    text-decoration: none;
+}
+.tabela-imoveis a:hover {
+    text-decoration: underline;
+}
+
+/* Adiciona um estilo mais sutil para o nome do cliente */
+.tabela-imoveis td:nth-child(3) {
+    font-weight: 600;
+}
+
+/* Ajuste nos botões de ação para ficarem mais espaçados */
+.tabela-imoveis .acoes {
+    gap: 1rem;
+}
+.tabela-imoveis .btn-acao.btn-ver i {
+    color: #25D366; /* Cor do WhatsApp */
+}
+.tabela-imoveis .btn-acao.btn-editar i {
+    color: #6c757d; /* Cinza para o e-mail */
+}
+
+/* --- Estilos para a Foto de Perfil no Header --- */
+.header-perfil-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--cor-branco);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* --- Estilos na Página Minha Conta --- */
+.perfil-foto-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.perfil-foto-preview {
+    /* Aumentando o tamanho para uma melhor visualização */
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--cor-branco);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.form-hint {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* --- Estilos da Página de Perfil do Corretor --- */
+.perfil-header-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background-color: var(--cor-branco);
+    padding: 2rem;
+    border-radius: var(--borda-radius);
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.perfil-foto img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #eee;
+}
+
+.perfil-info h1 {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.corretor-credenciais {
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+.corretor-credenciais span {
+    margin: 0 0.5rem;
+}
+
+.corretor-contato {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+}
+
+.secao-titulo {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* --- Estilo do link "Anunciado por" na página de detalhes --- */
+.anunciado-por {
+    padding: 1rem 0; /* Mantém o espaçamento interno */
+    margin-bottom: 1rem; /* Adiciona um espaço abaixo */
+}
+
+.anunciado-por p {
+    margin: 0; /* Garante que o parágrafo não adicione margens extras */
+}
+
+.anunciado-por a {
+    color: var(--cor-principal);
+    text-decoration: none;
+    font-weight: 600;
+}
+.anunciado-por a:hover {
+    text-decoration: underline;
 }

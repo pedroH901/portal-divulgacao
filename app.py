@@ -14,6 +14,7 @@ app.config['SECRET_KEY'] = 'uma-chave-secreta-bem-aleatoria-para-seguranca'
 SERVER_NAME = 'localhost'
 DATABASE_NAME = 'SeuNovoImovel'
 app.config['UPLOAD_FOLDER'] = 'static/uploads/imoveis'
+app.config['UPLOAD_FOLDER_PERFIS'] = 'static/uploads/perfis' # NOVA PASTA
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 connection_string = (
@@ -430,32 +431,36 @@ def meus_leads():
 
     return render_template('meus_leads.html', title='Meus Leads', leads=leads)
 
+# Em app.py
+
 @app.route('/minha-conta', methods=['GET', 'POST'])
 @login_required
 def minha_conta():
-    """
-    Permite que o usuário logado edite seus próprios dados
-    e altere sua senha.
-    """
+    user = current_user # Pegamos o usuário logado para facilitar
+
+    # --- LÓGICA DO POST (QUANDO O FORMULÁRIO É ENVIADO) ---
     if request.method == 'POST':
-        user = current_user
-        
         # Atualiza os dados básicos
         user.nome = request.form.get('nome')
         user.email = request.form.get('email')
         user.telefone = request.form.get('telefone')
 
+        # Lógica para o upload da foto de perfil
+        if 'foto_perfil' in request.files:
+            file = request.files['foto_perfil']
+            if file and file.filename != '' and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                os.makedirs(app.config['UPLOAD_FOLDER_PERFIS'], exist_ok=True)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER_PERFIS'], filename))
+                user.foto_perfil = os.path.join('uploads', 'perfis', filename).replace('\\', '/')
+        
         # Lógica para alterar a senha
         senha_atual = request.form.get('senha_atual')
         nova_senha = request.form.get('nova_senha')
-        confirmar_nova_senha = request.form.get('confirmar_nova_senha')
-
-        # Só tenta alterar a senha se o campo 'nova_senha' foi preenchido
-        if nova_senha:
-            # Verifica se a senha atual está correta
+        
+        if nova_senha and senha_atual:
             if bcrypt.check_password_hash(user.senha_hash, senha_atual):
-                # Verifica se a nova senha e a confirmação coincidem
-                if nova_senha == confirmar_nova_senha:
+                if nova_senha == request.form.get('confirmar_nova_senha'):
                     user.senha_hash = bcrypt.generate_password_hash(nova_senha).decode('utf-8')
                     flash('Sua senha foi atualizada com sucesso!', 'success')
                 else:
@@ -464,18 +469,53 @@ def minha_conta():
                 flash('A sua senha atual está incorreta.', 'danger')
         
         db.session.commit()
-        if not nova_senha: # Se não tentou mudar a senha, a atualização dos dados foi um sucesso
+        if not nova_senha:
             flash('Seus dados foram atualizados com sucesso!', 'success')
 
         return redirect(url_for('minha_conta'))
 
-    return render_template('minha_conta.html', title='Minha Conta')
+    # --- LÓGICA DO GET (QUANDO A PÁGINA É CARREGADA) ---
+    # Este bloco agora é executado APENAS quando a página é aberta pela primeira vez.
+    url_foto_perfil = None
+    if user.foto_perfil and user.foto_perfil != 'default.jpg':
+        url_foto_perfil = url_for('static', filename=user.foto_perfil)
+    else:
+        # Caminho para uma imagem padrão, caso o usuário não tenha foto.
+        url_foto_perfil = url_for('static', filename='uploads/perfis/default.jpg')
+    
+    return render_template('minha_conta.html', title='Minha Conta', url_foto_perfil=url_foto_perfil)
 
-# Em app.py
+
 @app.route('/dashboard/desempenho')
 @login_required
 def desempenho():
+    
     return render_template('desempenho.html', title='Meu Desempenho')
+    return render_template('meus_leads.html', title='Meus Leads', leads=leads)
+
+
+# --- NOVA ROTA PARA A PÁGINA DE PERFIL DO CORRETOR ---
+@app.route('/corretor/<int:usuario_id>')
+def perfil_corretor(usuario_id):
+    """
+    Mostra a página de perfil de um corretor específico,
+    listando todos os seus imóveis ativos.
+    """
+    # Busca o corretor pelo ID ou retorna um erro 404 se não existir
+    corretor = db.get_or_404(Usuario, usuario_id)
+
+    # Busca todos os imóveis ativos associados a esse corretor
+    imoveis_do_corretor = Imovel.query.filter_by(
+        anunciante=corretor, 
+        data_exclusao=None
+    ).order_by(Imovel.data_publicacao.desc()).all()
+
+    return render_template(
+        'perfil_corretor.html',
+        title=f"Imóveis de {corretor.nome}",
+        corretor=corretor,
+        imoveis=imoveis_do_corretor
+    )
 
 # Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':

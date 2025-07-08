@@ -30,6 +30,15 @@
         <h1>{{ imovel.titulo }}</h1>
         <p class="localizacao">{{ imovel.bairro }}, {{ imovel.cidade }} - {{ imovel.estado }}</p>
         
+            <div class="anunciado-por">
+            <p>
+            Anunciado por: 
+            <a href="{{ url_for('perfil_corretor', usuario_id=imovel.anunciante.id_usuario) }}">
+                <strong>{{ imovel.anunciante.nome }}</strong>
+            </a>
+            </p>
+            </div>
+
         <ul class="specs-imovel">
             <li><i class="fa-solid fa-ruler-combined"></i> {{ imovel.area_construida|int }} m²</li>
             <li><i class="fa-solid fa-bed"></i> {{ imovel.quartos }} Quarto(s)</li>

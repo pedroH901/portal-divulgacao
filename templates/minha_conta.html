@@ -11,6 +11,16 @@
     <h2>Minha Conta</h2>
     <p>Atualize suas informações pessoais e de acesso.</p>
     
+        <div class="perfil-foto-container">
+        <img src="{{ url_foto_perfil or url_for('static', filename='default.jpg') }}" alt="Foto de Perfil" class="perfil-foto-preview">
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <div class="form-group">
+            <label for="foto_perfil">Alterar Foto de Perfil</label>
+            <input type="file" name="foto_perfil" class="form-control">
+        </div>
+
     <form method="POST" class="admin-form">
         <fieldset>
             <legend>Dados Pessoais</legend>

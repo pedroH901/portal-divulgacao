@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+<div class="perfil-header-container">
+    <div class="perfil-foto">
+        {% if corretor.foto_perfil and corretor.foto_perfil != 'default.jpg' %}
+            <img src="{{ url_for('static', filename=corretor.foto_perfil) }}" alt="Foto de {{ corretor.nome }}">
+        {% else %}
+            <img src="{{ url_for('static', filename='uploads/perfis/default.jpg') }}" alt="Foto de perfil padrão">
+        {% endif %}
+    </div>
+    <div class="perfil-info">
+        <h1>{{ corretor.nome }}</h1>
+        <p class="corretor-credenciais">
+            Corretor de Imóveis
+            {% if corretor.documento %}
+                <span>|</span> CRECI: {{ corretor.documento }}
+            {% endif %}
+        </p>
+        <p class="corretor-contato">
+            <i class="fa-solid fa-envelope"></i> {{ corretor.email }}
+        </p>
+    </div>
+</div>
+
+<section class="destaques">
+    <h2 class="secao-titulo">Imóveis Anunciados por {{ corretor.nome.split()[0] }}</h2>
+    <div class="grid-imoveis">
+        {% if imoveis %}
+            {% for imovel in imoveis %}
+                <div class="card-imovel">
+                    {% if imovel.imagens %}
+                        {% set imagem_url = imovel.imagens[0].url_imagem %}
+                        <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ imovel.titulo }}">
+                    {% else %}
+                        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                    {% endif %}
+                    <div class="card-content">
+                        <h3>{{ imovel.titulo }}</h3>
+                        <p class="preco">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                        <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="sem-resultados">
+                <p>{{ corretor.nome.split()[0] }} ainda não possui imóveis ativos anunciados.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
