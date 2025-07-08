@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+<div class="voltar-link-container">
+    <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para o Painel</a>
+</div>
+
+<div class="form-container-admin">
+    <h2>Minha Conta</h2>
+    <p>Atualize suas informações pessoais e de acesso.</p>
+    
+    <form method="POST" class="admin-form">
+        <fieldset>
+            <legend>Dados Pessoais</legend>
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" name="nome" class="form-control" value="{{ current_user.nome }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" class="form-control" value="{{ current_user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="tel" name="telefone" class="form-control" value="{{ current_user.telefone or '' }}">
+            </div>
+        </fieldset>
+
+        <hr class="form-divider">
+
+        <fieldset>
+            <legend>Alterar Senha</legend>
+            <p class="form-hint">Deixe os campos abaixo em branco se não desejar alterar sua senha.</p>
+            <div class="form-group">
+                <label for="senha_atual">Senha Atual</label>
+                <input type="password" name="senha_atual" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="nova_senha">Nova Senha</label>
+                <input type="password" name="nova_senha" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="confirmar_nova_senha">Confirme a Nova Senha</label>
+                <input type="password" name="confirmar_nova_senha" class="form-control">
+            </div>
+        </fieldset>
+        
+        <button type="submit" class="btn btn-submit-admin">Salvar Alterações</button>
+    </form>
+</div>
+{% endblock %}

@@ -18,14 +18,14 @@
                         <span>Olá, {{ current_user.nome.split()[0] }}</span>
                         <i class="fa-solid fa-chevron-down"></i>
                     </button>
-                    <div class="user-menu-dropdown">
-                        <a href="{{ url_for('dashboard') }}">Meu Painel</a>
-                        <a href="{{ url_for('cadastrar_imovel') }}">Anunciar Imóvel</a>
-                        <a href="{{ url_for('logout') }}" class="logout-link">Sair</a>
-                    </div>
+<div class="user-menu-dropdown">
+    <a href="{{ url_for('dashboard') }}">Meu Painel</a>
+    <a href="{{ url_for('minha_conta') }}">Minha Conta</a>
+    <a href="{{ url_for('anunciar') }}">Anunciar Imóvel</a>
+    <a href="{{ url_for('logout') }}" class="logout-link">Sair</a>
+</div>
                 </div>
             {% else %}
-                <a href="#" class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
                 <a href="{{ url_for('registrar') }}" class="btn btn-anunciar">Anunciar Imóvel</a>
                 <a href="{{ url_for('login') }}" class="login-link">Entrar</a>
             {% endif %}

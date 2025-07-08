@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+{% block content %}
+<div class="voltar-link-container">
+    <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para o Painel</a>
+</div>
+<div class="page-header">
+    <h1>Meu Desempenho</h1>
+    <p>Em breve, aqui você verá gráficos e estatísticas sobre seus anúncios.</p>
+</div>
+{% endblock %}  

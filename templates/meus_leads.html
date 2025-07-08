@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+<div class="voltar-link-container">
+    <a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para o Painel</a>
+</div>
+
+<div class="painel-container">
+    <div class="painel-header">
+        <h3>Meus Leads Recebidos</h3>
+    </div>
+
+    {% if leads %}
+    <div class="tabela-imoveis-wrapper">
+        <table class="tabela-imoveis">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Imóvel de Interesse</th>
+                    <th>Nome do Cliente</th>
+                    <th>Contato</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.data_contato.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>
+                        <a href="{{ url_for('imovel_detalhes', imovel_id=lead.imovel_solicitado.id_imovel) }}" target="_blank">
+                            {{ lead.imovel_solicitado.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ lead.nome }}</td>
+                    <td>
+                        {{ lead.email }}<br>
+                        {{ lead.telefone }}
+                    </td>
+                    <td class="acoes">
+                        <a href="https://wa.me/55{{ lead.telefone | replace(' ','') | replace('-','') }}" target="_blank" class="btn-acao btn-ver" title="Chamar no WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="mailto:{{ lead.email }}" class="btn-acao btn-editar" title="Enviar E-mail">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="sem-imoveis">
+        <p>Você ainda não recebeu nenhum contato de clientes.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

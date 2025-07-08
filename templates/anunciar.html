@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Anuncie seu Imóvel no Portal</h1>
+    <p>Escolha o plano ideal para dar visibilidade ao seu anúncio.</p>
+</div>
+
+<div class="planos-container">
+    <div class="plano-card">
+        <div class="plano-header">
+            <h3>Anúncio Padrão</h3>
+            <p class="plano-preco">R$ XX,XX <span class="plano-duracao">/ 180 dias</span></p>
+        </div>
+        <div class="plano-body">
+            <ul class="plano-features">
+                <li><i class="fa-solid fa-check"></i> Anúncio visível por 6 meses</li>
+                <li><i class="fa-solid fa-check"></i> Fotos ilimitadas</li>
+                <li><i class="fa-solid fa-check"></i> Edição livre durante o período</li>
+                <li><i class="fa-solid fa-check"></i> Participação no carrossel rotativo</li>
+                <li><i class="fa-solid fa-check"></i> Painel de gerenciamento de leads</li>
+            </ul>
+        </div>
+        <div class="plano-footer">
+            <a href="{{ url_for('cadastrar_imovel') }}" class="btn btn-assinar">Contratar e Cadastrar Imóvel</a>
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

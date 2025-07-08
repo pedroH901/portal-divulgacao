@@ -406,6 +406,76 @@ def politica_de_privacidade():
     """ Rota para a página de Política de Privacidade. """
     return render_template('politica_de_privacidade.html', title='Política de Privacidade')
 
+@app.route('/anunciar')
+@login_required # Garante que só usuários logados possam ver esta página
+def anunciar():
+    """
+    Mostra a página onde o usuário pode escolher um plano
+    para anunciar um novo imóvel.
+    """
+    return render_template('anunciar.html', title='Anunciar um Imóvel')
+
+@app.route('/dashboard/leads')
+@login_required
+def meus_leads():
+    """
+    Mostra uma lista de todos os leads recebidos nos imóveis
+    do usuário logado.
+    """
+    # Esta consulta busca os leads e já otimiza a busca pelo imóvel relacionado
+    # para evitar múltiplas consultas ao banco de dados (join).
+    leads = Lead.query.join(Imovel).filter(
+        Imovel.id_usuario == current_user.id_usuario
+    ).order_by(Lead.data_contato.desc()).all()
+
+    return render_template('meus_leads.html', title='Meus Leads', leads=leads)
+
+@app.route('/minha-conta', methods=['GET', 'POST'])
+@login_required
+def minha_conta():
+    """
+    Permite que o usuário logado edite seus próprios dados
+    e altere sua senha.
+    """
+    if request.method == 'POST':
+        user = current_user
+        
+        # Atualiza os dados básicos
+        user.nome = request.form.get('nome')
+        user.email = request.form.get('email')
+        user.telefone = request.form.get('telefone')
+
+        # Lógica para alterar a senha
+        senha_atual = request.form.get('senha_atual')
+        nova_senha = request.form.get('nova_senha')
+        confirmar_nova_senha = request.form.get('confirmar_nova_senha')
+
+        # Só tenta alterar a senha se o campo 'nova_senha' foi preenchido
+        if nova_senha:
+            # Verifica se a senha atual está correta
+            if bcrypt.check_password_hash(user.senha_hash, senha_atual):
+                # Verifica se a nova senha e a confirmação coincidem
+                if nova_senha == confirmar_nova_senha:
+                    user.senha_hash = bcrypt.generate_password_hash(nova_senha).decode('utf-8')
+                    flash('Sua senha foi atualizada com sucesso!', 'success')
+                else:
+                    flash('A nova senha e a confirmação não coincidem.', 'danger')
+            else:
+                flash('A sua senha atual está incorreta.', 'danger')
+        
+        db.session.commit()
+        if not nova_senha: # Se não tentou mudar a senha, a atualização dos dados foi um sucesso
+            flash('Seus dados foram atualizados com sucesso!', 'success')
+
+        return redirect(url_for('minha_conta'))
+
+    return render_template('minha_conta.html', title='Minha Conta')
+
+# Em app.py
+@app.route('/dashboard/desempenho')
+@login_required
+def desempenho():
+    return render_template('desempenho.html', title='Meu Desempenho')
 
 # Ponto de entrada para rodar a aplicação
 if __name__ == '__main__':
