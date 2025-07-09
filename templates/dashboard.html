@@ -52,7 +52,7 @@
             </div>
             <div class="dashboard-card-content">
                 <h4>{{ imovel.titulo }}</h4>
-                <p class="preco-dashboard">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
                 <div class="dashboard-card-acoes">
                     <a href="{{ url_for('editar_imovel', imovel_id=imovel.id_imovel) }}" class="btn-acao btn-editar">Editar</a>
                     <form method="POST" action="{{ url_for('excluir_imovel', imovel_id=imovel.id_imovel) }}" onsubmit="return confirm('Tem certeza que deseja excluir este imóvel?');">

@@ -25,7 +25,7 @@
 
             <div class="card-content">
                 <h3>{{ imovel.titulo }}</h3>
-                <p class="preco">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+                <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
                 <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
             </div>
         </div>

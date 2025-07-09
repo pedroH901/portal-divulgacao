@@ -60,6 +60,7 @@ class Imovel(db.Model):
     data_publicacao = db.Column('DataPublicacao', db.DateTime, nullable=False, default=datetime.utcnow)
     data_exclusao = db.Column('DataExclusao', db.DateTime, nullable=True)
     destaque_ordem = db.Column('DestaqueOrdem', db.Integer, default=0)
+    data_ultima_rotacao = db.Column('DataUltimaRotacao', db.DateTime, default=datetime.utcnow)
     finalidade = db.Column('Finalidade', db.String(20), nullable=False, default='Venda')
 
     # Relacionamentos

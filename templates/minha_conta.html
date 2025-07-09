@@ -59,5 +59,19 @@
         
         <button type="submit" class="btn btn-submit-admin">Salvar Alterações</button>
     </form>
+
 </div>
+
+    <hr class="form-divider">
+    
+
+<div class="delete-zone">
+    <h3>Zona de Perigo</h3>
+    <p>A exclusão da sua conta é uma ação permanente e não poderá ser desfeita. Todos os seus imóveis e leads associados serão apagados.</p>
+    <form method="POST" action="{{ url_for('excluir_conta') }}" onsubmit="return confirm('ATENÇÃO! Você tem certeza ABSOLUTA que deseja excluir sua conta e todos os seus dados?');">
+        <button type="submit" class="btn btn-danger">Excluir Minha Conta Permanentemente</button>
+    </form>
+</div>
+
+
 {% endblock %}

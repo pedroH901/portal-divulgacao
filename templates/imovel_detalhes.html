@@ -56,7 +56,7 @@
         </ul>
 
         <div class="bloco-preco-e-acao">
-            <p class="preco-detalhe">R$ {{ "%.2f"|format(imovel.preco)|replace('.', ',') }}</p>
+            <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
             <button type="button" id="gatilho-form" class="btn btn-contato">Tenho Interesse</button>
             
             <div id="container-form-lead" class="form-escondido">
@@ -102,22 +102,23 @@
     <h2>Outros imóveis que podem te interessar</h2>
     <div class="carrossel-wrapper">
         <button class="carrossel-btn btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
-<div class="carrossel-track">
-    {% for outro_imovel in outros_imoveis %}
-        <div class="card-imovel">
-            {% if outro_imovel.imagens %}
-                {% set imagem_url = outro_imovel.imagens[0].url_imagem %}
-                <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ outro_imovel.titulo }}">
-            {% else %}
-                <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
-            {% endif %}
+        <div class="carrossel-track">
+            {% for outro_imovel in outros_imoveis %}
+                <div class="card-imovel">
+                    {% if outro_imovel.imagens %}
+                        {% set imagem_url = outro_imovel.imagens[0].url_imagem %}
+                        <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ outro_imovel.titulo }}">
+                    {% else %}
+                        <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                    {% endif %}
                     <div class="card-content">
                         <h3>{{ outro_imovel.titulo }}</h3>
-                        <p class="preco">R$ {{ "%.2f"|format(outro_imovel.preco)|replace('.', ',') }}</p>
+                        <p class="preco">R$ {{ outro_imovel.preco | humanize_price }}</p>
                         <a href="{{ url_for('imovel_detalhes', imovel_id=outro_imovel.id_imovel) }}" class="btn">Ver detalhes</a>
                     </div>
                 </div>
-            {% endfor %} </div>
+            {% endfor %}
+        </div>
         <button class="carrossel-btn btn-next"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 </section>
