@@ -11,7 +11,7 @@
 <div class="dashboard-atalhos">
     <a href="{{ url_for('meus_leads') }}" class="atalho-card">
         <i class="fa-solid fa-users"></i>
-        <h4>Meus Leads</h4>
+        <h4>Meus Leads</h4> 
         <p>Veja os contatos de clientes interessados.</p>
     </a>
     <a href="{{ url_for('desempenho') }}" class="atalho-card">
@@ -51,6 +51,7 @@
                 {% endif %}
             </div>
             <div class="dashboard-card-content">
+                <p class="card-id">ID do Imóvel: #{{ imovel.id_imovel }}</p>
                 <h4>{{ imovel.titulo }}</h4>
                 <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
                 <div class="dashboard-card-acoes">

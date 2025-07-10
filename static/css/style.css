@@ -1578,3 +1578,10 @@ footer {
     background-color: #c82333;
     filter: none;
 }
+
+.dashboard-card-content .card-id {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
