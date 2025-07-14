@@ -241,7 +241,7 @@ def dashboard():
         Imovel.query.filter_by(anunciante=current_user).order_by(Imovel.titulo).all()
     )
 
-    return render_template("dashboard.html", title="Painel", meus_imoveis=meus_imoveis)
+    return render_template("dashboard.html", title="Painel", meus_imoveis=meus_imoveis, now=datetime.utcnow())
 
 
 @app.route("/logout")
@@ -466,29 +466,25 @@ def comprar():
     )
 
 
-@app.route("/alugar")
+@app.route('/alugar')
 def alugar():
     """
     Mostra todos os imóveis disponíveis para Aluguel, com paginação.
     """
-    page = request.args.get("page", 1, type=int)
+    page = request.args.get('page', 1, type=int)
 
-    # A única mudança é aqui: filtramos por 'Aluguel'
-    pagination = (
-        Imovel.query.filter_by(finalidade="Aluguel", data_exclusao=None)
-        .order_by(Imovel.destaque_ordem.desc())
-        .paginate(page=page, per_page=9, error_out=False)
-    )
-
+    pagination = Imovel.query.filter_by(finalidade='Aluguel', data_exclusao=None)\
+                             .order_by(Imovel.destaque_ordem.desc())\
+                             .paginate(page=page, per_page=9, error_out=False)
+    
     imoveis_para_alugar = pagination.items
 
     return render_template(
-        "alugar.html",
+        'alugar.html', 
         imoveis=imoveis_para_alugar,
-        title="Imóveis para Alugar",
-        pagination=pagination,
+        title='Imóveis para Alugar',
+        pagination=pagination
     )
-
 
 @app.route("/termos-de-uso")
 def termos_de_uso():
@@ -660,6 +656,18 @@ def perfil_corretor(usuario_id):
         corretor=corretor,
         imoveis=imoveis_do_corretor,
     )
+
+# --- ROTA PARA A PÁGINA DE CHECKOUT DO ANÚNCIO ---
+@app.route('/anunciar/checkout')
+@login_required
+def checkout_anuncio():
+    """
+    Mostra uma página de resumo antes do usuário
+    prosseguir para o pagamento.
+    """
+    # No futuro, podemos passar o ID do plano escolhido aqui.
+    # Por enquanto, mostramos os dados do nosso plano padrão.
+    return render_template('checkout.html', title='Confirmar Plano')
 
 
 # Ponto de entrada para rodar a aplicação

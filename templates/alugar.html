@@ -10,7 +10,19 @@
         <div class="grid-imoveis">
             {% if imoveis %}
                 {% for imovel in imoveis %}
-                    <div class="card-imovel"> ... </div>
+                    <div class="card-imovel">
+                        {% if imovel.imagens %}
+                            {% set imagem_url = imovel.imagens[0].url_imagem %}
+                            <img src="{{ imagem_url if imagem_url.startswith('http') else url_for('static', filename=imagem_url) }}" alt="Foto do {{ imovel.titulo }}">
+                        {% else %}
+                            <img src="https://placehold.co/400x250/EFEFEF/333333?text=Sem+Foto" alt="Imóvel sem foto">
+                        {% endif %}
+                        <div class="card-content">
+                            <h3>{{ imovel.titulo }}</h3>
+                            <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
+                            <a href="{{ url_for('imovel_detalhes', imovel_id=imovel.id_imovel) }}" class="btn">Ver detalhes</a>
+                        </div>
+                    </div>
                 {% endfor %}
             {% else %}
                 <div class="sem-resultados">
@@ -37,7 +49,7 @@
                 {% endif %}
             {% endfor %}
             <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                <a class="page-link" href="{{ url_for('alugar', page=pagination.next_num) }}">Próxima &raquo;</a>
+                <a class="page-link" href="{{ url_for('alugar', page=page_num) }}">Próxima &raquo;</a>
             </li>
         </ul>
         {% endif %}

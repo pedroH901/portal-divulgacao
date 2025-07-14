@@ -714,7 +714,32 @@ footer {
     gap: 1.5rem;
     margin-bottom: 2.5rem;
 }
-/* ... (estilos do atalho-card continuam os mesmos) ... */
+
+/* --- Estilos para o Resumo do Dashboard --- */
+.dashboard-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+.resumo-card {
+    background: linear-gradient(135deg, #f7f7f7, #ffffff);
+    padding: 1.5rem;
+    border-radius: var(--borda-radius);
+    text-align: center;
+    border: 1px solid #eee;
+}
+.resumo-card h4 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.resumo-numero {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cor-principal);
+}
 
 .painel-container {
     background: var(--cor-branco);
@@ -815,6 +840,8 @@ footer {
     transition: background-color 0.2s;
 }
 
+
+
 .btn-acao.btn-editar {
     background-color: #f0f0f0;
     color: var(--cor-texto);
@@ -842,6 +869,31 @@ footer {
     padding: 4rem 2rem;
 }
 .sem-imoveis p { margin-bottom: 1.5rem; }
+
+.card-validade {
+    font-size: 0.85rem;
+    color: #666;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+    border-top: 1px solid #eee;
+}
+.card-validade p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.card-validade i {
+    color: var(--cor-principal);
+}
+.card-validade .expirado {
+    color: #dc3545;
+    font-weight: bold;
+}
+.card-validade .expirado i {
+    color: #dc3545;
+}
+
 
 /* --- Estilos para os Formulários do Painel Admin --- */
 .form-container-admin {
@@ -1584,4 +1636,70 @@ footer {
     font-weight: bold;
     color: #888;
     margin-bottom: 0.5rem;
+}
+
+/* --- Estilos para a Página de Checkout --- */
+.checkout-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.checkout-box {
+    background: var(--cor-branco);
+    padding: 2.5rem;
+    border-radius: var(--borda-radius);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 500px;
+}
+
+.checkout-box h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    padding: 1rem 0;
+}
+
+.item-label {
+    color: #666;
+}
+
+.item-valor {
+    font-weight: 600;
+}
+
+.checkout-divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 1rem 0;
+}
+
+.resumo-item.total {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.resumo-item.total .item-valor {
+    color: var(--cor-principal);
+}
+
+.checkout-info {
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.btn-pagar {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: var(--cor-sucesso);
 }

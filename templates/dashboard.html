@@ -8,6 +8,21 @@
     <p>Bem-vindo de volta, <strong>{{ current_user.nome }}</strong>!</p>
 </div>
 
+<div class="dashboard-resumo">
+    <div class="resumo-card">
+        <h4>Anúncios Ativos</h4>
+        <p class="resumo-numero">{{ meus_imoveis|length }}</p>
+    </div>
+    <div class="resumo-card">
+        <h4>Leads Recebidos</h4>
+        <p class="resumo-numero">0</p> {# Placeholder, vamos implementar isso no futuro #}
+    </div>
+    <div class="resumo-card">
+        <h4>Visualizações</h4>
+        <p class="resumo-numero">0</p> {# Placeholder #}
+    </div>
+</div>
+
 <div class="dashboard-atalhos">
     <a href="{{ url_for('meus_leads') }}" class="atalho-card">
         <i class="fa-solid fa-users"></i>
@@ -54,6 +69,18 @@
                 <p class="card-id">ID do Imóvel: #{{ imovel.id_imovel }}</p>
                 <h4>{{ imovel.titulo }}</h4>
                 <p class="preco">R$ {{ imovel.preco | humanize_price }}</p>
+                 <div class="card-validade">
+        {% if imovel.data_expiracao %}
+            {% set dias_restantes = (imovel.data_expiracao - now).days %}
+            {% if dias_restantes > 0 %}
+                <p><i class="fa-solid fa-hourglass-half"></i> Expira em <strong>{{ dias_restantes }} dias</strong></p>
+            {% else %}
+                <p class="expirado"><i class="fa-solid fa-circle-xmark"></i> Expirado</p>
+            {% endif %}
+        {% else %}
+            <p class="sem-validade"><i class="fa-solid fa-question-circle"></i> Sem data de expiração</p>
+        {% endif %}
+    </div>
                 <div class="dashboard-card-acoes">
                     <a href="{{ url_for('editar_imovel', imovel_id=imovel.id_imovel) }}" class="btn-acao btn-editar">Editar</a>
                     <form method="POST" action="{{ url_for('excluir_imovel', imovel_id=imovel.id_imovel) }}" onsubmit="return confirm('Tem certeza que deseja excluir este imóvel?');">

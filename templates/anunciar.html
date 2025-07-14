@@ -23,9 +23,14 @@
                 <li><i class="fa-solid fa-check"></i> Painel de gerenciamento de leads</li>
             </ul>
         </div>
-        <div class="plano-footer">
-            <a href="{{ url_for('cadastrar_imovel') }}" class="btn btn-assinar">Contratar e Cadastrar Imóvel</a>
-        </div>
+<div class="plano-footer">
+    {% if current_user.is_authenticated %}
+        <a href="{{ url_for('checkout_anuncio') }}" class="btn btn-assinar">Contratar e Cadastrar</a>
+    {% else %}
+        <a href="{{ url_for('registrar') }}" class="btn btn-assinar">Criar Conta para Anunciar</a>
+    {% endif %}
+</div>
+
     </div>
 
     </div>

@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }} - Seu Novo Imóvel{% endblock %}
+
+{% block content %}
+<div class="voltar-link-container">
+    <a href="{{ url_for('anunciar') }}"><i class="fa-solid fa-arrow-left"></i> Voltar para os Planos</a>
+</div>
+
+<div class="checkout-container">
+    <div class="checkout-box">
+        <h2>Resumo do seu Pedido</h2>
+        
+        <div class="resumo-item">
+            <span class="item-label">Plano:</span>
+            <span class="item-valor">Anúncio Padrão</span>
+        </div>
+        <div class="resumo-item">
+            <span class="item-label">Validade:</span>
+            <span class="item-valor">180 dias</span>
+        </div>
+        <hr class="checkout-divider">
+        <div class="resumo-item total">
+            <span class="item-label">Total a Pagar:</span>
+            <span class="item-valor">R$ XX,XX</span>
+        </div>
+        
+        <p class="checkout-info">
+            Você será redirecionado para um ambiente de pagamento seguro para finalizar a sua compra.
+        </p>
+        
+        <a href="#" class="btn btn-pagar">Prosseguir para o Pagamento</a>
+    </div>
+</div>
+{% endblock %}
